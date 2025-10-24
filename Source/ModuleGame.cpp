@@ -33,5 +33,6 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
+
 	return UPDATE_CONTINUE;
 }
