@@ -32,7 +32,7 @@ bool ModulePhysics::Start()
     LOG("Creating Physics 2D environment");
 
     // --- Create Box2D world ---
-    b2Vec2 gravity(0.0f, 10.0f);
+    b2Vec2 gravity(GRAVITY_X, GRAVITY_Y);
     world = new b2World(gravity);
 
     // --- Create static ground ---
@@ -291,7 +291,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
     PhysBody* pbody = new PhysBody();
 
     b2BodyDef body;
-    body.type = b2_dynamicBody;
+    body.type = b2_staticBody;
     body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
     body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
@@ -310,6 +310,42 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 
     b2FixtureDef fixture;
     fixture.shape = &shape;
+
+    b->CreateFixture(&fixture);
+
+    delete p;
+
+    pbody->body = b;
+    pbody->width = pbody->height = 0;
+
+    return pbody;
+}
+
+PhysBody* ModulePhysics::CreateChainSensor(int x, int y, const int* points, int size)
+{
+    PhysBody* pbody = new PhysBody();
+
+    b2BodyDef body;
+    body.type = b2_staticBody;
+    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+
+    b2Body* b = world->CreateBody(&body);
+
+    b2ChainShape shape;
+    b2Vec2* p = new b2Vec2[size / 2];
+
+    for (int i = 0; i < size / 2; ++i)
+    {
+        p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
+        p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
+    }
+
+    shape.CreateLoop(p, size / 2);
+
+    b2FixtureDef fixture;
+    fixture.shape = &shape;
+    fixture.isSensor = true;
 
     b->CreateFixture(&fixture);
 

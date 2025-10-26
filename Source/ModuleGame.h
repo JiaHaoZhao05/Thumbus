@@ -28,6 +28,7 @@ public:
 
 	Texture2D ballTex;
 	Texture2D bumperTex;
+	Texture2D outerBackgroundTex;
 	Vector2 bumperPos = { 300, 400 };
 	
 };

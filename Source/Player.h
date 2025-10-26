@@ -14,5 +14,9 @@ public:
 	bool CleanUp();
 
 public:
-
+	int currentScore = 0;
+	int previousScore = 0;
+	int highScore = 0 ;
+	int balls = 3;
+	int currentBalls = 0;
 };
