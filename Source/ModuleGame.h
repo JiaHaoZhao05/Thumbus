@@ -23,6 +23,8 @@ public:
 	bool CleanUp();
 
 public:
+	std::vector<PhysicEntity*> entities;
 
+	Texture2D ball;
 	
 };

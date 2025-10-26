@@ -50,11 +50,10 @@ bool ModulePhysics::Start()
     paddleFixture.friction = 0.3f;
 
     // --- LEFT PADDLE ---
-    // --- LEFT PADDLE ---
     b2BodyDef leftDef;
     leftDef.type = b2_dynamicBody;
     // Center of paddle is half-width to the right of pivot
-    leftDef.position.Set(PIXELS_TO_METERS(150 + 50), PIXELS_TO_METERS(400));
+    leftDef.position.Set(PIXELS_TO_METERS(190 + 50), PIXELS_TO_METERS(600));
     leftPaddle = world->CreateBody(&leftDef);
     leftPaddle->CreateFixture(&paddleFixture);
 
@@ -63,7 +62,7 @@ bool ModulePhysics::Start()
     leftJointDef.bodyB = leftPaddle;
 
     // Pivot at left side of paddle (base)
-    leftJointDef.localAnchorA.Set(PIXELS_TO_METERS(150), PIXELS_TO_METERS(400));
+    leftJointDef.localAnchorA.Set(PIXELS_TO_METERS(190), PIXELS_TO_METERS(600));
     leftJointDef.localAnchorB.Set(-PIXELS_TO_METERS(50), 0); // relative to paddle center
 
     leftJointDef.enableLimit = true;
@@ -79,7 +78,7 @@ bool ModulePhysics::Start()
     // --- RIGHT PADDLE ---
     b2BodyDef rightDef;
     rightDef.type = b2_dynamicBody;
-    rightDef.position.Set(PIXELS_TO_METERS(650 - 50), PIXELS_TO_METERS(400)); // center half-width left
+    rightDef.position.Set(PIXELS_TO_METERS(410 - 50), PIXELS_TO_METERS(600)); // center half-width left
     rightPaddle = world->CreateBody(&rightDef);
     rightPaddle->CreateFixture(&paddleFixture);
 
@@ -88,7 +87,7 @@ bool ModulePhysics::Start()
     rightJointDef.bodyB = rightPaddle;
 
     // Pivot at right side of paddle (base)
-    rightJointDef.localAnchorA.Set(PIXELS_TO_METERS(650), PIXELS_TO_METERS(400));
+    rightJointDef.localAnchorA.Set(PIXELS_TO_METERS(410), PIXELS_TO_METERS(600));
     rightJointDef.localAnchorB.Set(PIXELS_TO_METERS(50), 0);
 
     rightJointDef.enableLimit = true;
@@ -181,6 +180,120 @@ update_status ModulePhysics::PostUpdate()
     return UPDATE_CONTINUE;
 }
 
+PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
+{
+    PhysBody* pbody = new PhysBody();
+
+    b2BodyDef body;
+    body.type = b2_dynamicBody;
+    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+
+    b2Body* b = world->CreateBody(&body);
+
+    b2CircleShape shape;
+    shape.m_radius = PIXEL_TO_METERS(radius);
+    b2FixtureDef fixture;
+    fixture.shape = &shape;
+    fixture.density = 1.0f;
+
+    b->CreateFixture(&fixture);
+
+    pbody->body = b;
+    pbody->width = pbody->height = radius;
+
+    return pbody;
+}
+
+PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
+{
+    PhysBody* pbody = new PhysBody();
+
+    b2BodyDef body;
+    body.type = b2_dynamicBody;
+    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+
+    b2Body* b = world->CreateBody(&body);
+    b2PolygonShape box;
+    box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
+
+    b2FixtureDef fixture;
+    fixture.shape = &box;
+    fixture.density = 1.0f;
+
+    b->CreateFixture(&fixture);
+
+    pbody->body = b;
+    pbody->width = (int)(width * 0.5f);
+    pbody->height = (int)(height * 0.5f);
+
+    return pbody;
+}
+
+PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
+{
+    PhysBody* pbody = new PhysBody();
+
+    b2BodyDef body;
+    body.type = b2_staticBody;
+    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+
+    b2Body* b = world->CreateBody(&body);
+
+    b2PolygonShape box;
+    box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
+
+    b2FixtureDef fixture;
+    fixture.shape = &box;
+    fixture.density = 1.0f;
+    fixture.isSensor = true;
+
+    b->CreateFixture(&fixture);
+
+    pbody->body = b;
+    pbody->width = width;
+    pbody->height = height;
+
+    return pbody;
+}
+
+PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
+{
+    PhysBody* pbody = new PhysBody();
+
+    b2BodyDef body;
+    body.type = b2_dynamicBody;
+    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+
+    b2Body* b = world->CreateBody(&body);
+
+    b2ChainShape shape;
+    b2Vec2* p = new b2Vec2[size / 2];
+
+    for (int i = 0; i < size / 2; ++i)
+    {
+        p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
+        p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
+    }
+
+    shape.CreateLoop(p, size / 2);
+
+    b2FixtureDef fixture;
+    fixture.shape = &shape;
+
+    b->CreateFixture(&fixture);
+
+    delete p;
+
+    pbody->body = b;
+    pbody->width = pbody->height = 0;
+
+    return pbody;
+}
+
 bool ModulePhysics::CleanUp()
 {
     LOG("Destroying physics world");
@@ -189,4 +302,81 @@ bool ModulePhysics::CleanUp()
     world = nullptr;
 
     return true;
+}
+
+void PhysBody::GetPhysicPosition(int& x, int& y) const
+{
+    b2Vec2 pos = body->GetPosition();
+    x = METERS_TO_PIXELS(pos.x);
+    y = METERS_TO_PIXELS(pos.y);
+}
+
+float PhysBody::GetRotation() const
+{
+    return body->GetAngle();
+}
+
+bool PhysBody::Contains(int x, int y) const
+{
+    b2Vec2 p(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+    const b2Fixture* fixture = body->GetFixtureList();
+
+    while (fixture != NULL)
+    {
+        if (fixture->GetShape()->TestPoint(body->GetTransform(), p) == true)
+            return true;
+        fixture = fixture->GetNext();
+    }
+
+    return false;
+}
+
+int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const
+{
+    int ret = -1;
+
+    b2RayCastInput input;
+    b2RayCastOutput output;
+
+    input.p1.Set(PIXEL_TO_METERS(x1), PIXEL_TO_METERS(y1));
+    input.p2.Set(PIXEL_TO_METERS(x2), PIXEL_TO_METERS(y2));
+    input.maxFraction = 1.0f;
+
+    const b2Fixture* fixture = body->GetFixtureList();
+
+    while (fixture != NULL)
+    {
+        if (fixture->GetShape()->RayCast(&output, input, body->GetTransform(), 0) == true)
+        {
+            // do we want the normal ?
+
+            float fx = (float)(x2 - x1);
+            float fy = (float)(y2 - y1);
+            float dist = sqrtf((fx * fx) + (fy * fy));
+
+            normal_x = output.normal.x;
+            normal_y = output.normal.y;
+
+            return (int)(output.fraction * dist);
+        }
+        fixture = fixture->GetNext();
+    }
+
+    return ret;
+}
+
+void ModulePhysics::BeginContact(b2Contact* contact)
+{
+    b2BodyUserData dataA = contact->GetFixtureA()->GetBody()->GetUserData();
+    b2BodyUserData dataB = contact->GetFixtureB()->GetBody()->GetUserData();
+
+    PhysBody* physA = (PhysBody*)dataA.pointer;
+    PhysBody* physB = (PhysBody*)dataB.pointer;
+
+    if (physA && physA->listener != NULL)
+        physA->listener->OnCollision(physA, physB);
+
+    if (physB && physB->listener != NULL)
+        physB->listener->OnCollision(physB, physA);
 }

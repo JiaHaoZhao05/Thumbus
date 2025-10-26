@@ -38,8 +38,8 @@ public:
     bool GetWindowEvent(WindowEvent ev);
 
 private:
-	uint width = 9 * 80;
-	uint height = 16 * 80;
+	uint width = 16 * 80;
+	uint height = 9 * 80;
 
     bool windowEvents[WINDOW_EVENT_COUNT];
 };
