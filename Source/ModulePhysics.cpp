@@ -53,7 +53,7 @@ bool ModulePhysics::Start()
     b2BodyDef leftDef;
     leftDef.type = b2_dynamicBody;
     // Center of paddle is half-width to the right of pivot
-    leftDef.position.Set(PIXELS_TO_METERS(190 + 50), PIXELS_TO_METERS(600));
+    leftDef.position.Set(PIXELS_TO_METERS(140 + 50), PIXELS_TO_METERS(600));
     leftPaddle = world->CreateBody(&leftDef);
     leftPaddle->CreateFixture(&paddleFixture);
 
@@ -62,7 +62,7 @@ bool ModulePhysics::Start()
     leftJointDef.bodyB = leftPaddle;
 
     // Pivot at left side of paddle (base)
-    leftJointDef.localAnchorA.Set(PIXELS_TO_METERS(190), PIXELS_TO_METERS(600));
+    leftJointDef.localAnchorA.Set(PIXELS_TO_METERS(140), PIXELS_TO_METERS(600));
     leftJointDef.localAnchorB.Set(-PIXELS_TO_METERS(50), 0); // relative to paddle center
 
     leftJointDef.enableLimit = true;
@@ -78,7 +78,7 @@ bool ModulePhysics::Start()
     // --- RIGHT PADDLE ---
     b2BodyDef rightDef;
     rightDef.type = b2_dynamicBody;
-    rightDef.position.Set(PIXELS_TO_METERS(410 - 50), PIXELS_TO_METERS(600)); // center half-width left
+    rightDef.position.Set(PIXELS_TO_METERS(360 - 50), PIXELS_TO_METERS(600)); // center half-width left
     rightPaddle = world->CreateBody(&rightDef);
     rightPaddle->CreateFixture(&paddleFixture);
 
@@ -87,7 +87,7 @@ bool ModulePhysics::Start()
     rightJointDef.bodyB = rightPaddle;
 
     // Pivot at right side of paddle (base)
-    rightJointDef.localAnchorA.Set(PIXELS_TO_METERS(410), PIXELS_TO_METERS(600));
+    rightJointDef.localAnchorA.Set(PIXELS_TO_METERS(360), PIXELS_TO_METERS(600));
     rightJointDef.localAnchorB.Set(PIXELS_TO_METERS(50), 0);
 
     rightJointDef.enableLimit = true;
@@ -232,32 +232,6 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
     return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
-{
-    PhysBody* pbody = new PhysBody();
-
-    b2BodyDef body;
-    body.type = b2_dynamicBody;
-    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
-
-    b2Body* b = world->CreateBody(&body);
-    b2PolygonShape box;
-    box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
-
-    b2FixtureDef fixture;
-    fixture.shape = &box;
-    fixture.density = 1.0f;
-
-    b->CreateFixture(&fixture);
-
-    pbody->body = b;
-    pbody->width = (int)(width * 0.5f);
-    pbody->height = (int)(height * 0.5f);
-
-    return pbody;
-}
-
 PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
 {
     PhysBody* pbody = new PhysBody();
@@ -310,6 +284,42 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 
     b2FixtureDef fixture;
     fixture.shape = &shape;
+
+    b->CreateFixture(&fixture);
+
+    delete p;
+
+    pbody->body = b;
+    pbody->width = pbody->height = 0;
+
+    return pbody;
+}
+
+PhysBody* ModulePhysics::CreateChainTriangle(int x, int y, const int* points, int size)
+{
+    PhysBody* pbody = new PhysBody();
+
+    b2BodyDef body;
+    body.type = b2_staticBody;
+    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+
+    b2Body* b = world->CreateBody(&body);
+
+    b2ChainShape shape;
+    b2Vec2* p = new b2Vec2[size / 2];
+
+    for (int i = 0; i < size / 2; ++i)
+    {
+        p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
+        p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
+    }
+
+    shape.CreateLoop(p, size / 2);
+
+    b2FixtureDef fixture;
+    fixture.shape = &shape;
+    fixture.restitution = 0.9, 1;
 
     b->CreateFixture(&fixture);
 

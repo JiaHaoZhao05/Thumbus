@@ -63,8 +63,8 @@ private:
 class Bumper : public PhysicEntity
 {
 public:
-	Bumper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateBumper(_x, _y, 20), _listener)
+	Bumper(ModulePhysics* physics, int _x, int _y, int _rad, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateBumper(_x, _y, _rad), _listener)
 		, texture(_texture)
 	{
 		int x, y;
@@ -107,6 +107,25 @@ private:
 
 };
 
+class Triangle : public PhysicEntity
+{
+public:
+	Triangle(ModulePhysics* physics, int _x, int _y, const int* points, int size, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChainTriangle(_x, _y, points, size), _listener)
+		, texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		DrawTexture(texture, 0, 0, WHITE);
+	}
+private:
+	Texture2D texture;
+
+};
+
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	
@@ -124,8 +143,13 @@ bool ModuleGame::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	ballTex = LoadTexture("Assets/ball.png");
-	bumperTex = LoadTexture("Assets/wheel.png");
+	bumperTex = LoadTexture("Assets/bumper.png");
+	bumperMiniTex = LoadTexture("Assets/bumperMini.png");
 	outerBackgroundTex = LoadTexture("Assets/Map/outerBackground.png");
+	triangle1Tex = LoadTexture("Assets/Map/triangle1.png");
+	triangle2Tex = LoadTexture("Assets/Map/triangle2.png");
+	triangle3Tex = LoadTexture("Assets/Map/triangle3.png");
+	triangle4Tex = LoadTexture("Assets/Map/triangle4.png");
 
 	//rick = LoadTexture("Assets/rick_head.png");
 
@@ -161,18 +185,82 @@ update_status ModuleGame::Update()
 	return UPDATE_CONTINUE;
 }
 
-static constexpr int outerBackground[6] = {
-	20,50,
-	50,30,
-	100,20
+static constexpr int outerBackground[48] = {
+	241, 6,
+	147, 25,
+	81, 81,
+	40, 151,
+	13, 244,
+	3, 340,
+	8, 414,
+	26, 477,
+	45, 522,
+	133, 585,
+	90, 637,
+	86, 708,
+	397, 716,
+	398, 634,
+	368, 584,
+	443, 530,
+	445, 786,
+	479, 783,
+	486, 419,
+	494, 316,
+	482, 219,
+	455, 142,
+	414, 78,
+	346, 22
+};
 
+static constexpr int triangle1[10] = {
+	396, 394,
+	409, 395,
+	450, 465,
+	367, 551,
+	354, 543
+};
+
+static constexpr int triangle2[10] = {
+	94, 400,
+	109, 399,
+	148, 544,
+	138, 554,
+	54, 468
+};
+
+static constexpr int triangle3[10] = {
+	454, 313,
+	429, 357,
+	420, 355,
+	395, 265,
+	403, 260
+};
+
+static constexpr int triangle4[10] = {
+	75, 288,
+	67, 290,
+	40, 246,
+	92, 191,
+	101, 197
 };
 
 void ModuleGame::CreateWorld() {
-	//bumpers
-	entities.emplace_back(new Bumper(App->physics, bumperPos.x, bumperPos.y, this, bumperTex));
 
 	//background
-	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 6, this, outerBackgroundTex));
+	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 48, this, outerBackgroundTex));
+
+	//bumpers
+	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 21, this, bumperTex));
+	entities.emplace_back(new Bumper(App->physics, bumper2Pos.x, bumper2Pos.y, 21, this, bumperTex));
+	entities.emplace_back(new Bumper(App->physics, bumper3Pos.x, bumper3Pos.y, 21, this, bumperTex));
+	entities.emplace_back(new Bumper(App->physics, bumper4Pos.x, bumper4Pos.y, 11, this, bumperMiniTex));
+	entities.emplace_back(new Bumper(App->physics, bumper5Pos.x, bumper5Pos.y, 11, this, bumperMiniTex));
+	entities.emplace_back(new Bumper(App->physics, bumper6Pos.x, bumper6Pos.y, 11, this, bumperMiniTex));
+
+	//triangles
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle1, 10, this, triangle1Tex));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 }
 

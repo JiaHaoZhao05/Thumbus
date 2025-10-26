@@ -48,9 +48,9 @@ public:
 
 	PhysBody* CreateBall(int x, int y, int radius);
 	PhysBody* CreateBumper(int x, int y, int radius);
-	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
+	PhysBody* CreateChainTriangle(int x, int y, const int* points, int size);
 	PhysBody* CreateChainSensor(int x, int y, const int* points, int size);
 	
 	// Paddles and joints
