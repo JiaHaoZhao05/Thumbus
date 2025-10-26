@@ -196,7 +196,7 @@ update_status ModulePhysics::PreUpdate()
         wasKeyDown = false;
 
         float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit()); //Erik you need the difference that was just its current position
-        float k = 250.0f; // constante elastica del resorte (ajustable)
+        float k = 18.0f; // constante elastica del resorte (ajustable)
         float force = -k * compression; //raylib negative == up
 
         springPrismatic->EnableMotor(false);
@@ -208,7 +208,7 @@ update_status ModulePhysics::PreUpdate()
         if (currentTranslation > PIXELS_TO_METERS(0.5f)) {
             springPrismatic->EnableMotor(true);
             springPrismatic->SetMotorSpeed(-10.0f);  // negative = move up on screen
-            springPrismatic->SetMaxMotorForce(150.0f);
+            springPrismatic->SetMaxMotorForce(10.0f);
         }
         else {
             springPrismatic->EnableMotor(false);
