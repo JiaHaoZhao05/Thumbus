@@ -171,16 +171,16 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-		if (IsKeyPressed(KEY_ONE))
-	{
-		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ballTex));
-
+	/*if (IsKeyDown(KEY_ONE)) {
+		ball-> ~PhysicEntity();
+		ball = new Ball(App->physics, ballPos.x, ballPos.y, this, ballTex);
 	}
-	 
+	*/
 	for (PhysicEntity* entity : entities)
 	{
 		entity->Update();
 	}
+	ball->Update();
 
 	return UPDATE_CONTINUE;
 }
@@ -216,15 +216,15 @@ static constexpr int triangle1[10] = {
 	396, 394,
 	409, 395,
 	445, 465,
-	367, 551,
-	354, 543
+	367, 545,
+	354, 544
 };
 
 static constexpr int triangle2[10] = {
 	94, 400,
 	109, 399,
 	148, 544,
-	138, 554,
+	138, 545,
 	54, 468
 };
 
@@ -266,5 +266,8 @@ void ModuleGame::CreateWorld() {
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
 	//entities.emplace_back(deathZone, deathZone->listener);
+
+	//ball
+	ball = new Ball(App->physics, ballPos.x, ballPos.y, this, ballTex);
 }
 
