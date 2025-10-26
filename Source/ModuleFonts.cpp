@@ -2,8 +2,8 @@
 #include "ModuleRender.h"
 #include "ModuleFonts.h"
 
-#include "Defs.h"
-#include "Log.h"
+//#include "Defs.h"
+//#include "Log.h"
 
 ModuleFonts::ModuleFonts() : Module()
 {
