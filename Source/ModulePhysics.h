@@ -64,6 +64,12 @@ private:
 	b2RevoluteJoint* leftJoint = nullptr;
 	b2RevoluteJoint* rightJoint = nullptr;
 
+	// Plunger / spring
+	b2Body* springBody = nullptr;
+	b2PrismaticJoint* springPrismatic = nullptr;
+	float springForce = 0.0f;
+	float maxSpringForce = 30.0f;
+
 
 	
 

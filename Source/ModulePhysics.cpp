@@ -102,6 +102,37 @@ bool ModulePhysics::Start()
     leftJoint->EnableMotor(false);
     rightJoint->EnableMotor(false);
 
+    // --- PLUNGER / SPRING BODY (rectángulo vertical que se desliza) ---
+    b2BodyDef springDef;
+    springDef.type = b2_dynamicBody;
+    springDef.position.Set(PIXELS_TO_METERS(500), PIXELS_TO_METERS(500));
+    springDef.fixedRotation = true; // que no rote
+    springBody = world->CreateBody(&springDef);
+
+    b2PolygonShape springShape;
+    springShape.SetAsBox(PIXELS_TO_METERS(10), PIXELS_TO_METERS(60)); // 20x120 píxeles
+
+    b2FixtureDef springFixture;
+    springFixture.shape = &springShape;
+    springFixture.density = 1.0f;     // masa moderada para que pueda moverse
+    springFixture.friction = 0.2f;
+    springBody->CreateFixture(&springFixture);
+
+    // --- Cuerpo estático de anclaje superior ---
+    b2BodyDef anchorDef;
+    anchorDef.position.Set(PIXELS_TO_METERS(500), PIXELS_TO_METERS(440)); // punto fijo arriba
+    b2Body* anchor = world->CreateBody(&anchorDef);
+
+    // --- Prismatic joint: solo movimiento vertical ---
+    b2PrismaticJointDef prismaticDef;
+    prismaticDef.Initialize(anchor, springBody, anchor->GetPosition(), b2Vec2(0.0f, 1.0f));
+    prismaticDef.enableLimit = true;
+    prismaticDef.lowerTranslation = -PIXELS_TO_METERS(80); // 80 px hacia abajo máximo
+    prismaticDef.upperTranslation = 0.0f; // punto de reposo
+    springPrismatic = (b2PrismaticJoint*)world->CreateJoint(&prismaticDef);
+
+
+
     return true;
 }
 
@@ -110,7 +141,6 @@ update_status ModulePhysics::PreUpdate()
 {
     world->Step(1.0f / 60.0f, 6, 2);
 
-    // --- LEFT PADDLE ---
     // LEFT PADDLE
     if (IsKeyDown(KEY_LEFT))
     {
@@ -145,6 +175,29 @@ update_status ModulePhysics::PreUpdate()
         rightJoint->SetMaxMotorTorque(50.0f);
     }
 
+    // --- Control del plunger (spring) ---
+    float currentTranslation = springPrismatic->GetJointTranslation();
+
+    // --- Tirar hacia abajo ---
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+    {
+        // aplicamos impulso hacia abajo solo si no llega al tope
+        if (currentTranslation > springPrismatic->GetLowerLimit())
+        {
+            springBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 5.0f), true);
+        }
+    }
+    // --- Soltar: impulsa hacia arriba proporcional a la distancia ---
+    else if (currentTranslation < -PIXELS_TO_METERS(2))
+    {
+        float compression = fabs(currentTranslation);  // cuánto bajó el plunger
+        float k = 250.0f; // constante elastica del resorte (ajustable)
+        float force = k * compression;
+
+        // aplicar impulso hacia arriba
+        springBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -force), true);
+    }
+
 
     return UPDATE_CONTINUE;
 }
@@ -176,6 +229,17 @@ update_status ModulePhysics::PostUpdate()
         rAngle,
         BLUE
     );
+    
+    //Draw spring
+    b2Vec2 pos = springBody->GetPosition();
+
+    DrawRectanglePro(
+        Rectangle{ METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), 20, 120 },
+        Vector2{ 10, 60 },
+        0.0f,
+        ORANGE
+    );
+
 
     return UPDATE_CONTINUE;
 }
