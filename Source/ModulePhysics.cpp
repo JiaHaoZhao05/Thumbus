@@ -232,30 +232,31 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
     return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
+PhysBody* ModulePhysics::CreateDeathZone()
 {
+    int x = 250;
+    int y = 650;
+    int radius = 20;
     PhysBody* pbody = new PhysBody();
 
     b2BodyDef body;
-    body.type = b2_staticBody;
+    body.type = b2_dynamicBody;
     body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
     body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
     b2Body* b = world->CreateBody(&body);
 
-    b2PolygonShape box;
-    box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
-
+    b2CircleShape shape;
+    shape.m_radius = PIXEL_TO_METERS(radius);
     b2FixtureDef fixture;
-    fixture.shape = &box;
+    fixture.shape = &shape;
     fixture.density = 1.0f;
     fixture.isSensor = true;
 
     b->CreateFixture(&fixture);
 
     pbody->body = b;
-    pbody->width = width;
-    pbody->height = height;
+    pbody->width = pbody->height = radius;
 
     return pbody;
 }
@@ -447,8 +448,9 @@ void ModulePhysics::BeginContact(b2Contact* contact)
     PhysBody* physA = (PhysBody*)dataA.pointer;
     PhysBody* physB = (PhysBody*)dataB.pointer;
 
-    if (physA && physA->listener != NULL)
-        physA->listener->OnCollision(physA, physB);
+  
+  //  if (physA == App->scene_intro->deathZone && physA == App->scene_intro->ball)
+      //  physA->listener->OnCollision(physA, physB);
 
     if (physB && physB->listener != NULL)
         physB->listener->OnCollision(physB, physA);

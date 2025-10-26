@@ -262,5 +262,9 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
+
+	//deathzone
+	deathZone = App->physics->CreateDeathZone();
+	//entities.emplace_back(deathZone, deathZone->listener);
 }
 

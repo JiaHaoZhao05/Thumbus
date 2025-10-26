@@ -48,7 +48,7 @@ public:
 
 	PhysBody* CreateBall(int x, int y, int radius);
 	PhysBody* CreateBumper(int x, int y, int radius);
-	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
+	PhysBody* CreateDeathZone();
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
 	PhysBody* CreateChainTriangle(int x, int y, const int* points, int size);
 	PhysBody* CreateChainSensor(int x, int y, const int* points, int size);
