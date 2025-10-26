@@ -186,7 +186,7 @@ update_status ModulePhysics::PreUpdate()
 
         if (currentTranslation < springPrismatic->GetUpperLimit()){
             springPrismatic->SetMotorSpeed(5.0f);     // positive = move down on screen
-            springPrismatic->SetMaxMotorForce(200.0f);
+            springPrismatic->SetMaxMotorForce(10.0f);
         }
         else{
             springPrismatic->SetMotorSpeed(0.0f);
@@ -274,7 +274,7 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
     shape.m_radius = PIXEL_TO_METERS(radius);
     b2FixtureDef fixture;
     fixture.shape = &shape;
-    fixture.density = 1.0f;
+    fixture.density = 0.1f;
 
     b->CreateFixture(&fixture);
 
