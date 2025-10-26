@@ -127,10 +127,10 @@ bool ModulePhysics::Start()
     b2PrismaticJointDef prismaticDef;
     prismaticDef.Initialize(anchor, springBody, anchor->GetPosition(), b2Vec2(0.0f, 1.0f));
     prismaticDef.enableLimit = true;
-    prismaticDef.lowerTranslation = -PIXELS_TO_METERS(80); // 80 px hacia abajo máximo
-    prismaticDef.upperTranslation = 0.0f; // punto de reposo
+    prismaticDef.lowerTranslation = 0.0f; // punto de reposo
+    prismaticDef.upperTranslation = PIXELS_TO_METERS(80); // 80 px hacia abajo máximo
     springPrismatic = (b2PrismaticJoint*)world->CreateJoint(&prismaticDef);
-
+    springPrismatic->SetLimits(prismaticDef.lowerTranslation, prismaticDef.upperTranslation);
 
 
     return true;
@@ -175,30 +175,45 @@ update_status ModulePhysics::PreUpdate()
         rightJoint->SetMaxMotorTorque(50.0f);
     }
 
-    // --- Control del plunger (spring) ---
+    //SPRING CONTROL -> KEYDOWN
     float currentTranslation = springPrismatic->GetJointTranslation();
+    static bool wasKeyDown = false;
 
-    // --- Tirar hacia abajo ---
-    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
-    {
-        // aplicamos impulso hacia abajo solo si no llega al tope
-        if (currentTranslation > springPrismatic->GetLowerLimit())
-        {
-            springBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 5.0f), true);
+    if (IsKeyDown(KEY_DOWN)){
+        wasKeyDown = true;
+
+        springPrismatic->EnableMotor(true);
+
+        if (currentTranslation < springPrismatic->GetUpperLimit()){
+            springPrismatic->SetMotorSpeed(5.0f);     // positive = move down on screen
+            springPrismatic->SetMaxMotorForce(200.0f);
+        }
+        else{
+            springPrismatic->SetMotorSpeed(0.0f);
         }
     }
-    // --- Soltar: impulsa hacia arriba proporcional a la distancia ---
-    else if (currentTranslation < -PIXELS_TO_METERS(2))
-    {
-        float compression = fabs(currentTranslation);  // cuánto bajó el plunger
+    else if (wasKeyDown && IsKeyUp(KEY_DOWN)){
+        wasKeyDown = false;
+
+        float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit()); //Erik you need the difference that was just its current position
         float k = 250.0f; // constante elastica del resorte (ajustable)
-        float force = k * compression;
+        float force = -k * compression; //raylib negative == up
+
+        springPrismatic->EnableMotor(false);
 
         // aplicar impulso hacia arriba
-        springBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -force), true);
+        springBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
     }
-
-
+    else { //si no estas haciendo nada, gravedad mueve el muelle, esto hace que vuelva a su posicion inicial, no lo quites Erik
+        if (currentTranslation > PIXELS_TO_METERS(0.5f)) {
+            springPrismatic->EnableMotor(true);
+            springPrismatic->SetMotorSpeed(-10.0f);  // negative = move up on screen
+            springPrismatic->SetMaxMotorForce(150.0f);
+        }
+        else {
+            springPrismatic->EnableMotor(false);
+        }
+    }
     return UPDATE_CONTINUE;
 }
 
