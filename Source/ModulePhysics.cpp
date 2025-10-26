@@ -102,6 +102,37 @@ bool ModulePhysics::Start()
     leftJoint->EnableMotor(false);
     rightJoint->EnableMotor(false);
 
+    // --- PLUNGER / SPRING BODY (rectángulo vertical que se desliza) ---
+    b2BodyDef springDef;
+    springDef.type = b2_dynamicBody;
+    springDef.position.Set(PIXELS_TO_METERS(500), PIXELS_TO_METERS(500));
+    springDef.fixedRotation = true; // que no rote
+    springBody = world->CreateBody(&springDef);
+
+    b2PolygonShape springShape;
+    springShape.SetAsBox(PIXELS_TO_METERS(10), PIXELS_TO_METERS(60)); // 20x120 píxeles
+
+    b2FixtureDef springFixture;
+    springFixture.shape = &springShape;
+    springFixture.density = 1.0f;     // masa moderada para que pueda moverse
+    springFixture.friction = 0.2f;
+    springBody->CreateFixture(&springFixture);
+
+    // --- Cuerpo estático de anclaje superior ---
+    b2BodyDef anchorDef;
+    anchorDef.position.Set(PIXELS_TO_METERS(500), PIXELS_TO_METERS(440)); // punto fijo arriba
+    b2Body* anchor = world->CreateBody(&anchorDef);
+
+    // --- Prismatic joint: solo movimiento vertical ---
+    b2PrismaticJointDef prismaticDef;
+    prismaticDef.Initialize(anchor, springBody, anchor->GetPosition(), b2Vec2(0.0f, 1.0f));
+    prismaticDef.enableLimit = true;
+    prismaticDef.lowerTranslation = 0.0f; // punto de reposo
+    prismaticDef.upperTranslation = PIXELS_TO_METERS(80); // 80 px hacia abajo máximo
+    springPrismatic = (b2PrismaticJoint*)world->CreateJoint(&prismaticDef);
+    springPrismatic->SetLimits(prismaticDef.lowerTranslation, prismaticDef.upperTranslation);
+
+
     return true;
 }
 
@@ -110,7 +141,6 @@ update_status ModulePhysics::PreUpdate()
 {
     world->Step(1.0f / 60.0f, 6, 2);
 
-    // --- LEFT PADDLE ---
     // LEFT PADDLE
     if (IsKeyDown(KEY_LEFT))
     {
@@ -145,7 +175,45 @@ update_status ModulePhysics::PreUpdate()
         rightJoint->SetMaxMotorTorque(50.0f);
     }
 
+    //SPRING CONTROL -> KEYDOWN
+    float currentTranslation = springPrismatic->GetJointTranslation();
+    static bool wasKeyDown = false;
 
+    if (IsKeyDown(KEY_DOWN)){
+        wasKeyDown = true;
+
+        springPrismatic->EnableMotor(true);
+
+        if (currentTranslation < springPrismatic->GetUpperLimit()){
+            springPrismatic->SetMotorSpeed(5.0f);     // positive = move down on screen
+            springPrismatic->SetMaxMotorForce(200.0f);
+        }
+        else{
+            springPrismatic->SetMotorSpeed(0.0f);
+        }
+    }
+    else if (wasKeyDown && IsKeyUp(KEY_DOWN)){
+        wasKeyDown = false;
+
+        float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit()); //Erik you need the difference that was just its current position
+        float k = 18.0f; // constante elastica del resorte (ajustable)
+        float force = -k * compression; //raylib negative == up
+
+        springPrismatic->EnableMotor(false);
+
+        // aplicar impulso hacia arriba
+        springBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
+    }
+    else { //si no estas haciendo nada, gravedad mueve el muelle, esto hace que vuelva a su posicion inicial, no lo quites Erik
+        if (currentTranslation > PIXELS_TO_METERS(0.5f)) {
+            springPrismatic->EnableMotor(true);
+            springPrismatic->SetMotorSpeed(-10.0f);  // negative = move up on screen
+            springPrismatic->SetMaxMotorForce(10.0f);
+        }
+        else {
+            springPrismatic->EnableMotor(false);
+        }
+    }
     return UPDATE_CONTINUE;
 }
 
@@ -176,6 +244,17 @@ update_status ModulePhysics::PostUpdate()
         rAngle,
         BLUE
     );
+    
+    //Draw spring
+    b2Vec2 pos = springBody->GetPosition();
+
+    DrawRectanglePro(
+        Rectangle{ METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), 20, 120 },
+        Vector2{ 10, 60 },
+        0.0f,
+        ORANGE
+    );
+
 
     return UPDATE_CONTINUE;
 }
