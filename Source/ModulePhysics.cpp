@@ -105,7 +105,7 @@ bool ModulePhysics::Start()
     // --- PLUNGER / SPRING BODY (rectángulo vertical que se desliza) ---
     b2BodyDef springDef;
     springDef.type = b2_dynamicBody;
-    springDef.position.Set(PIXELS_TO_METERS(500), PIXELS_TO_METERS(500));
+    springDef.position.Set(PIXELS_TO_METERS(463), PIXELS_TO_METERS(650));
     springDef.fixedRotation = true; // que no rote
     springBody = world->CreateBody(&springDef);
 
@@ -120,7 +120,7 @@ bool ModulePhysics::Start()
 
     // --- Cuerpo estático de anclaje superior ---
     b2BodyDef anchorDef;
-    anchorDef.position.Set(PIXELS_TO_METERS(500), PIXELS_TO_METERS(440)); // punto fijo arriba
+    anchorDef.position.Set(PIXELS_TO_METERS(463), PIXELS_TO_METERS(590)); // punto fijo arriba
     b2Body* anchor = world->CreateBody(&anchorDef);
 
     // --- Prismatic joint: solo movimiento vertical ---
@@ -186,7 +186,7 @@ update_status ModulePhysics::PreUpdate()
 
         if (currentTranslation < springPrismatic->GetUpperLimit()){
             springPrismatic->SetMotorSpeed(5.0f);     // positive = move down on screen
-            springPrismatic->SetMaxMotorForce(200.0f);
+            springPrismatic->SetMaxMotorForce(10.0f);
         }
         else{
             springPrismatic->SetMotorSpeed(0.0f);
@@ -196,7 +196,7 @@ update_status ModulePhysics::PreUpdate()
         wasKeyDown = false;
 
         float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit()); //Erik you need the difference that was just its current position
-        float k = 18.0f; // constante elastica del resorte (ajustable)
+        float k = 15.0f; // constante elastica del resorte (ajustable)
         float force = -k * compression; //raylib negative == up
 
         springPrismatic->EnableMotor(false);
@@ -208,7 +208,7 @@ update_status ModulePhysics::PreUpdate()
         if (currentTranslation > PIXELS_TO_METERS(0.5f)) {
             springPrismatic->EnableMotor(true);
             springPrismatic->SetMotorSpeed(-10.0f);  // negative = move up on screen
-            springPrismatic->SetMaxMotorForce(10.0f);
+            springPrismatic->SetMaxMotorForce(150.0f);
         }
         else {
             springPrismatic->EnableMotor(false);

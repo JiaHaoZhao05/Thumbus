@@ -67,11 +67,6 @@ private:
 
 	b2World* world = nullptr;
 
-	// Paddles and joints
-	b2Body* leftPaddle = nullptr;
-	b2Body* rightPaddle = nullptr;
-	b2RevoluteJoint* leftJoint = nullptr;
-	b2RevoluteJoint* rightJoint = nullptr;
 
 	// Plunger / spring
 	b2Body* springBody = nullptr;

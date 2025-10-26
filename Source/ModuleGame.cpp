@@ -215,7 +215,7 @@ static constexpr int outerBackground[48] = {
 static constexpr int triangle1[10] = {
 	396, 394,
 	409, 395,
-	450, 465,
+	445, 465,
 	367, 551,
 	354, 543
 };
