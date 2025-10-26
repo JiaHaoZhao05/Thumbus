@@ -35,7 +35,7 @@ class Ball : public PhysicEntity
 {
 public:
 	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 12.5), _listener)
+		: PhysicEntity(physics->CreateBall(_x, _y, 12.5), _listener)
 		, texture(_texture)
 	{
 
@@ -54,10 +54,39 @@ public:
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 	}
 
+
 private:
 	Texture2D texture;
 
 };
+
+class Bumper : public PhysicEntity
+{
+public:
+	Bumper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateBumper(_x, _y, 20), _listener)
+		, texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Vector2 position{ (float)x, (float)y };
+		float scale = 1.0f;
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
+		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+	}
+private:
+	Texture2D texture;
+
+};
+
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -75,13 +104,14 @@ bool ModuleGame::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	ball = LoadTexture("Assets/ball.png");
+	ballTex = LoadTexture("Assets/ball.png");
+	bumperTex = LoadTexture("Assets/wheel.png");
 	//rick = LoadTexture("Assets/rick_head.png");
 
 	//bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 
 	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
-
+	CreateWorld();
 	return ret;
 }
 
@@ -98,7 +128,7 @@ update_status ModuleGame::Update()
 {
 		if (IsKeyPressed(KEY_ONE))
 	{
-		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ball));
+		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ballTex));
 
 	}
 	
@@ -120,4 +150,8 @@ update_status ModuleGame::Update()
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleGame::CreateWorld() {
+	entities.emplace_back(new Bumper(App->physics, bumperPos.x, bumperPos.y, this, bumperTex));
 }

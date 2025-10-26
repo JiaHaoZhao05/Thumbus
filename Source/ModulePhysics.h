@@ -46,10 +46,18 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(int x, int y, int radius);
+	PhysBody* CreateBall(int x, int y, int radius);
+	PhysBody* CreateBumper(int x, int y, int radius);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
+	
+	// Paddles and joints
+	b2Body* leftPaddle = nullptr;
+	b2Body* rightPaddle = nullptr;
+	b2RevoluteJoint* leftJoint = nullptr;
+	b2RevoluteJoint* rightJoint = nullptr;
+
 	
 
 private:
@@ -58,12 +66,7 @@ private:
 
 	b2World* world = nullptr;
 
-	// Paddles and joints
-	b2Body* leftPaddle = nullptr;
-	b2Body* rightPaddle = nullptr;
-	b2RevoluteJoint* leftJoint = nullptr;
-	b2RevoluteJoint* rightJoint = nullptr;
-
+	
 
 	
 

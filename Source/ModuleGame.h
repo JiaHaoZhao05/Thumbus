@@ -23,8 +23,11 @@ public:
 	bool CleanUp();
 
 public:
+	void ModuleGame::CreateWorld();
 	std::vector<PhysicEntity*> entities;
 
-	Texture2D ball;
+	Texture2D ballTex;
+	Texture2D bumperTex;
+	Vector2 bumperPos = { 300, 400 };
 	
 };

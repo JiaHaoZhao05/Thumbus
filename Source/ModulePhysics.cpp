@@ -180,7 +180,7 @@ update_status ModulePhysics::PostUpdate()
     return UPDATE_CONTINUE;
 }
 
-PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
+PhysBody* ModulePhysics::CreateBall(int x, int y, int radius)
 {
     PhysBody* pbody = new PhysBody();
 
@@ -196,6 +196,33 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
     b2FixtureDef fixture;
     fixture.shape = &shape;
     fixture.density = 1.0f;
+
+    b->CreateFixture(&fixture);
+
+    pbody->body = b;
+    pbody->width = pbody->height = radius;
+
+    return pbody;
+}
+
+
+PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
+{
+    PhysBody* pbody = new PhysBody();
+
+    b2BodyDef body;
+    body.type = b2_staticBody;
+    body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+    body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+
+    b2Body* b = world->CreateBody(&body);
+
+    b2CircleShape shape;
+    shape.m_radius = PIXEL_TO_METERS(radius);
+    b2FixtureDef fixture;
+    fixture.shape = &shape;
+    fixture.density = 1.0f;
+    fixture.restitution = 1, 1;
 
     b->CreateFixture(&fixture);
 
