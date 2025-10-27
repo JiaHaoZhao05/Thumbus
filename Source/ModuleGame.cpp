@@ -26,7 +26,7 @@ public:
 		return 0;
 	}
 
-protected:
+
 	PhysBody* body;
 	Module* listener;
 };
@@ -38,7 +38,7 @@ public:
 		: PhysicEntity(physics->CreateBall(_x, _y, 12.5), _listener)
 		, texture(_texture)
 	{
-		//body->body->SetTransform({ (float)_x, (float)_y },0);
+	
 	}
 
 	void Update() override
@@ -53,7 +53,6 @@ public:
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 	}
-
 
 private:
 	Texture2D texture;
@@ -171,9 +170,12 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
+	//ball reset
 	if (IsKeyDown(KEY_ONE)) {
-		ball->body->
-		ball = new Ball(App->physics, ballPos.x, ballPos.y, this, ballTex);
+		ball->body->body->SetTransform({ PIXEL_TO_METERS(ballPos.x),PIXEL_TO_METERS(ballPos.y) }, 0);
+		ball->body->body->SetLinearVelocity({0,0});
+		ball->body->body->SetFixedRotation(true);
+		ball->body->body->SetFixedRotation(false);
 	}
 	
 	for (PhysicEntity* entity : entities)
@@ -215,9 +217,9 @@ static constexpr int outerBackground[48] = {
 static constexpr int triangle1[10] = {
 	396, 394,
 	409, 395,
-	445, 465,
+	435, 465,
 	367, 545,
-	354, 544
+	345, 544
 };
 
 static constexpr int triangle2[10] = {
@@ -229,7 +231,7 @@ static constexpr int triangle2[10] = {
 };
 
 static constexpr int triangle3[10] = {
-	454, 313,
+	445, 313,
 	429, 357,
 	420, 355,
 	395, 265,
@@ -250,9 +252,9 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 48, this, outerBackgroundTex));
 
 	//bumpers
-	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 21, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper2Pos.x, bumper2Pos.y, 21, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper3Pos.x, bumper3Pos.y, 21, this, bumperTex));
+	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 30, this, bumperTex));
+	entities.emplace_back(new Bumper(App->physics, bumper2Pos.x, bumper2Pos.y, 30, this, bumperTex));
+	entities.emplace_back(new Bumper(App->physics, bumper3Pos.x, bumper3Pos.y, 30, this, bumperTex));
 	entities.emplace_back(new Bumper(App->physics, bumper4Pos.x, bumper4Pos.y, 11, this, bumperMiniTex));
 	entities.emplace_back(new Bumper(App->physics, bumper5Pos.x, bumper5Pos.y, 11, this, bumperMiniTex));
 	entities.emplace_back(new Bumper(App->physics, bumper6Pos.x, bumper6Pos.y, 11, this, bumperMiniTex));

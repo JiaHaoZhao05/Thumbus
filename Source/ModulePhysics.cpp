@@ -528,7 +528,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
     PhysBody* physB = (PhysBody*)dataB.pointer;
 
   
-  //  if (physA == App->scene_intro->deathZone && physA == App->scene_intro->ball)
+   // if (physA == App->scene_intro->ball && physB == App->scene_intro->ball)
       //  physA->listener->OnCollision(physA, physB);
 
     if (physB && physB->listener != NULL)
