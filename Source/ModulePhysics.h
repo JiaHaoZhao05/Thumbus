@@ -21,7 +21,7 @@ public:
 	PhysBody() : listener(NULL), body(NULL)
 	{
 	}
-
+	void SetPosition(int x, int y) const;
 	//void GetPosition(int& x, int& y) const;
 	void GetPhysicPosition(int& x, int& y) const;
 	float GetRotation() const;

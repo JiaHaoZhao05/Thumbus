@@ -38,7 +38,7 @@ public:
 		: PhysicEntity(physics->CreateBall(_x, _y, 12.5), _listener)
 		, texture(_texture)
 	{
-
+		//body->body->SetTransform({ (float)_x, (float)_y },0);
 	}
 
 	void Update() override
@@ -171,11 +171,11 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-	/*if (IsKeyDown(KEY_ONE)) {
-		ball-> ~PhysicEntity();
+	if (IsKeyDown(KEY_ONE)) {
+		ball->body->
 		ball = new Ball(App->physics, ballPos.x, ballPos.y, this, ballTex);
 	}
-	*/
+	
 	for (PhysicEntity* entity : entities)
 	{
 		entity->Update();
