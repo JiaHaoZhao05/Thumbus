@@ -173,7 +173,7 @@ update_status ModuleGame::Update()
 	//ball reset
 	if (IsKeyDown(KEY_ONE)) {
 		ball->body->body->SetTransform({ PIXEL_TO_METERS(ballPos.x),PIXEL_TO_METERS(ballPos.y) }, 0);
-		ball->body->body->SetLinearVelocity({0,0});
+		ball->body->body->SetLinearVelocity({0,0.1});
 		ball->body->body->SetFixedRotation(true);
 		ball->body->body->SetFixedRotation(false);
 	}
