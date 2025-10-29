@@ -142,6 +142,8 @@ bool ModuleGame::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	paddleRightTex = LoadTexture("Assets/ThumbRight.png");
+	paddleLeftTex = LoadTexture("Assets/ThumbLeft.png");
 	ballTex = LoadTexture("Assets/ball.png");
 	bumperTex = LoadTexture("Assets/bumper.png");
 	bumperMiniTex = LoadTexture("Assets/bumperMini.png");
@@ -242,6 +244,39 @@ static constexpr int triangle4[10] = {
 	40, 246,
 	92, 191,
 	101, 197
+};
+
+static constexpr int thumbusRight[28] = {
+	263, 698,
+	260, 688,
+	267, 677,
+	285, 667,
+	314, 663,
+	329, 656,
+	339, 657,
+	348, 665,
+	354, 679,
+	350, 694,
+	339, 695,
+	317, 689,
+	289, 690,
+	273, 697
+};
+static constexpr int thumbusLeft[28] = {
+	231, 690,
+	227, 698,
+	217, 697,
+	198, 689,
+	174, 689,
+	150, 695,
+	143, 694,
+	136, 683,
+	139, 669,
+	152, 655,
+	175, 662,
+	195, 665,
+	216, 673,
+	229, 684
 };
 
 void ModuleGame::CreateWorld() {
