@@ -120,7 +120,7 @@ bool ModulePhysics::Start()
     // --- Cuerpo estático de anclaje superior ---
     b2BodyDef anchorDef;
     anchorDef.position.Set(PIXELS_TO_METERS(463), PIXELS_TO_METERS(590)); // punto fijo arriba
-    b2Body* anchor = world->CreateBody(&anchorDef);
+    b2Body* anchor = world->CreateBody(&anchorDef); 
 
     // --- Prismatic joint: solo movimiento vertical ---
     b2PrismaticJointDef prismaticDef;
@@ -405,7 +405,8 @@ PhysBody* ModulePhysics::CreateDeathZone()
 {
     int x = 250;
     int y = 650;
-    int radius = 20;
+    int width = 500;
+    int height = 300;
     PhysBody* pbody = new PhysBody();
 
     b2BodyDef body;
@@ -414,18 +415,18 @@ PhysBody* ModulePhysics::CreateDeathZone()
     body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
     b2Body* b = world->CreateBody(&body);
-
-    b2CircleShape shape;
-    shape.m_radius = PIXEL_TO_METERS(radius);
+    b2PolygonShape shape;
+    shape.SetAsBox(width, height);
     b2FixtureDef fixture;
     fixture.shape = &shape;
-    fixture.density = 1.0f;
+    fixture.density = 0.0f;
     fixture.isSensor = true;
 
     b->CreateFixture(&fixture);
 
     pbody->body = b;
-    pbody->width = pbody->height = radius;
+    pbody->width = width ;
+    pbody->height = height ;
 
     return pbody;
 }
