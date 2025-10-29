@@ -268,3 +268,5 @@ void ModuleGame::CreateWorld() {
 	//entities.emplace_back(deathZone, deathZone->listener);
 }
 
+//Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
+// the flippers move
