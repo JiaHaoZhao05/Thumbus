@@ -31,7 +31,7 @@
     <ClCompile Include="Source\Player.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Flipper.cpp">
+    <ClCompile Include="Source\Flipper.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

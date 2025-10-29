@@ -47,6 +47,7 @@ public:
 	bool CleanUp();
 
 	PhysBody* CreateBall(int x, int y, int radius);
+	PhysBody* CreateFlipper(int height, int width, float density, float friction, int x, int y);
 	PhysBody* CreateBumper(int x, int y, int radius);
 	PhysBody* CreateDeathZone();
 	PhysBody* CreateChain(int x, int y, const int* points, int size);

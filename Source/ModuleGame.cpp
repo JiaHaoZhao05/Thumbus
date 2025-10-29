@@ -4,7 +4,16 @@
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "Flipper.h"
 
+#define PIXELS_PER_METER 50.0f
+#define METER_PER_PIXEL (1.0f / PIXELS_PER_METER)
+#define METERS_TO_PIXELS(m) ((float)((m) * PIXELS_PER_METER))
+#define PIXELS_TO_METERS(p) ((float)(p) / PIXELS_PER_METER)
+
+
+#define DEGTORAD 0.0174532925199432957f
+#define RADTODEG 57.295779513082320876f
 
 class PhysicEntity
 {
@@ -124,6 +133,33 @@ public:
 private:
 	Texture2D texture;
 
+};
+
+class Flipper : public PhysicEntity
+{
+public:
+	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D texture)
+		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y), _listener)
+		, texture(_texture) 
+	{
+
+		
+	}
+
+	void Update() {
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Vector2 position{ (float)x, (float)y };
+		float scale = 1.0f;
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
+		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+	}
+
+private:
+	Texture2D texture;
 };
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
