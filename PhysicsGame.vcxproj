@@ -180,6 +180,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Flipper.h" />
     <ClInclude Include="Source/Application.h" />
     <ClInclude Include="Source/Globals.h" />
     <ClInclude Include="Source/ModulePhysics.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Source\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Flipper.cpp" />
     <ClCompile Include="Source/Application.cpp" />
     <ClCompile Include="Source/Log.cpp" />
     <ClCompile Include="Source/Main.cpp" />
