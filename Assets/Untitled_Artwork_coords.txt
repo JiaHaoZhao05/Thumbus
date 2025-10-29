@@ -1,0 +1,9 @@
+// Pivot 0, 0
+int Untitled_Artwork[2] = {
+	250, 647
+};
+
+// Pivot 0.000000, 0.000000
+float Untitled_Artwork[2] = {
+	0.500000f, 0.808750f
+};

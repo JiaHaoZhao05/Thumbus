@@ -6,7 +6,7 @@
 #include "box2d\box2d.h"
 
 #define GRAVITY_X 0.0f
-#define GRAVITY_Y -7.0f
+#define GRAVITY_Y 7.0f
 
 #define PIXELS_PER_METER 50.0f // if touched change METER_PER_PIXEL too
 #define METER_PER_PIXEL 0.02f // this is 1 / PIXELS_PER_METER !
@@ -46,10 +46,19 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(int x, int y, int radius);
-	PhysBody* CreateRectangle(int x, int y, int width, int height);
-	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
+	PhysBody* CreateBall(int x, int y, int radius);
+	PhysBody* CreateBumper(int x, int y, int radius);
+	PhysBody* CreateDeathZone();
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
+	PhysBody* CreateChainTriangle(int x, int y, const int* points, int size);
+	PhysBody* CreateChainSensor(int x, int y, const int* points, int size);
+	
+	// Paddles and joints
+	b2Body* leftPaddle = nullptr;
+	b2Body* rightPaddle = nullptr;
+	b2RevoluteJoint* leftJoint = nullptr;
+	b2RevoluteJoint* rightJoint = nullptr;
+
 	
 
 private:
@@ -58,18 +67,12 @@ private:
 
 	b2World* world = nullptr;
 
-	// Paddles and joints
-	b2Body* leftPaddle = nullptr;
-	b2Body* rightPaddle = nullptr;
-	b2RevoluteJoint* leftJoint = nullptr;
-	b2RevoluteJoint* rightJoint = nullptr;
 
 	// Plunger / spring
 	b2Body* springBody = nullptr;
 	b2PrismaticJoint* springPrismatic = nullptr;
 	float springForce = 0.0f;
 	float maxSpringForce = 30.0f;
-
 
 	
 

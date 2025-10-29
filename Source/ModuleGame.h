@@ -23,8 +23,26 @@ public:
 	bool CleanUp();
 
 public:
+	void ModuleGame::CreateWorld();
 	std::vector<PhysicEntity*> entities;
 
-	Texture2D ball;
+	PhysBody* deathZone;
+
+
+	Texture2D ballTex;
+	Texture2D bumperTex;
+	Texture2D bumperMiniTex;
+	Texture2D outerBackgroundTex;
+	Texture2D triangle1Tex;
+	Texture2D triangle2Tex;
+	Texture2D triangle3Tex;
+	Texture2D triangle4Tex;
+
+	Vector2 bumper1Pos = { 150, 300 };
+	Vector2 bumper2Pos = { 275, 375 };
+	Vector2 bumper3Pos = { 325, 250 };
+	Vector2 bumper4Pos = { 350, 125 };
+	Vector2 bumper5Pos = { 150, 150 };
+	Vector2 bumper6Pos = { 250, 200 };
 	
 };
