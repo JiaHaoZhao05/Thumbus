@@ -37,6 +37,8 @@ public:
 	Texture2D triangle2Tex;
 	Texture2D triangle3Tex;
 	Texture2D triangle4Tex;
+	Texture2D paddleLeftTex;
+	Texture2D paddleRightTex;
 
 	Vector2 bumper1Pos = { 150, 300 };
 	Vector2 bumper2Pos = { 275, 375 };
