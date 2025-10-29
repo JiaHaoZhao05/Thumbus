@@ -73,8 +73,9 @@ private:
 	b2PrismaticJoint* springPrismatic = nullptr;
 	float springForce = 0.0f;
 	float maxSpringForce = 30.0f;
-
-	
+	//for the click and drag
+	b2MouseJoint* mouse_joint;
+	b2Body* ground;
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
