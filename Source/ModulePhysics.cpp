@@ -414,23 +414,23 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
 
     b2FixtureDef paddleFixture;
     paddleFixture.shape = &paddleShape;
-    paddleFixture.density = density;
-    paddleFixture.friction = friction;
+    paddleFixture.density = 5.0f;
+    paddleFixture.friction = 0.3f;
 
-    // --- PADDLE ---
+    // --- LEFT PADDLE ---
     b2BodyDef Def;
     Def.type = b2_dynamicBody;
     // Center of paddle is half-width to the right of pivot
-    Def.position.Set(PIXELS_TO_METERS(x + 50), PIXELS_TO_METERS(y));
+    Def.position.Set(PIXELS_TO_METERS(140 + 50), PIXELS_TO_METERS(600));
     Paddle = world->CreateBody(&Def);
     Paddle->CreateFixture(&paddleFixture);
 
     b2RevoluteJointDef JointDef;
     JointDef.bodyA = ground;
-    JointDef.bodyB = Paddle;
+    JointDef.bodyB = leftPaddle;
 
     // Pivot at left side of paddle (base)
-    JointDef.localAnchorA.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+    JointDef.localAnchorA.Set(PIXELS_TO_METERS(140), PIXELS_TO_METERS(600));
     JointDef.localAnchorB.Set(-PIXELS_TO_METERS(50), 0); // relative to paddle center
 
     JointDef.enableLimit = true;
@@ -440,8 +440,11 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     JointDef.enableMotor = true;
     JointDef.maxMotorTorque = 100.0f;
 
+    b2Joint Joint();
+
     Joint = (b2RevoluteJoint*)world->CreateJoint(&JointDef);
-    Joint->EnableMotor(false);
+
+
 }
 
 PhysBody* ModulePhysics::CreateDeathZone()

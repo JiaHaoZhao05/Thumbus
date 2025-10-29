@@ -138,7 +138,7 @@ private:
 class Flipper : public PhysicEntity
 {
 public:
-	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D texture)
+	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture)
 		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y), _listener)
 		, texture(_texture) 
 	{
@@ -157,7 +157,6 @@ public:
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 	}
-
 private:
 	Texture2D texture;
 };

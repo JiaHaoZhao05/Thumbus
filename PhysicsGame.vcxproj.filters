@@ -31,9 +31,6 @@
     <ClCompile Include="Source\Player.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Flipper.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source/p2Point.h">
@@ -67,9 +64,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Player.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Flipper.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
