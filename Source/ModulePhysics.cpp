@@ -38,8 +38,7 @@ bool ModulePhysics::Start()
     // --- Create static ground ---
     b2BodyDef groundDef;
     groundDef.position.Set(0, 0);
-    b2Body* ground = world->CreateBody(&groundDef);
-
+    ground = world->CreateBody(&groundDef);
     // --- Paddle fixture ---
     b2PolygonShape paddleShape;
     paddleShape.SetAsBox(PIXELS_TO_METERS(50), PIXELS_TO_METERS(10)); // 100x20 pixels
@@ -221,6 +220,9 @@ update_status ModulePhysics::PreUpdate()
 
 update_status ModulePhysics::PostUpdate()
 {
+    if (IsKeyPressed(KEY_F1))
+        debug = !debug;
+
     if (!debug)
         return UPDATE_CONTINUE;
 
@@ -231,30 +233,118 @@ update_status ModulePhysics::PostUpdate()
     b2Vec2 rPos = rightPaddle->GetPosition();
     float rAngle = rightPaddle->GetAngle() * RADTODEG;
 
-    DrawRectanglePro(
-        Rectangle{ METERS_TO_PIXELS(lPos.x), METERS_TO_PIXELS(lPos.y), 100, 20 },
-        Vector2{ 50, 10 },
-        lAngle,
-        RED
-    );
 
-    DrawRectanglePro(
-        Rectangle{ METERS_TO_PIXELS(rPos.x), METERS_TO_PIXELS(rPos.y), 100, 20 },
-        Vector2{ 50, 10 },
-        rAngle,
-        BLUE
-    );
-    
-    //Draw spring
-    b2Vec2 pos = springBody->GetPosition();
+    // Bonus code: this will iterate all objects in the world and draw the circles
+    // You need to provide your own macro to translate meters to pixels
+    b2Body* body_clicked = nullptr;
+    b2Vec2 mouse_position = b2Vec2{ PIXEL_TO_METERS(GetMousePosition().x), PIXEL_TO_METERS(GetMousePosition().y) };
+    for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+    {
+        for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
+        {
+            switch (f->GetType())
+            {
+                // Draw circles ------------------------------------------------
+            case b2Shape::e_circle:
+            {
+                b2CircleShape* shape = (b2CircleShape*)f->GetShape();
+                b2Vec2 pos = f->GetBody()->GetPosition();
 
-    DrawRectanglePro(
-        Rectangle{ METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), 20, 120 },
-        Vector2{ 10, 60 },
-        0.0f,
-        ORANGE
-    );
+                DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), (float)METERS_TO_PIXELS(shape->m_radius), Color{ 0, 0, 0, 128 });
+            }
+            break;
 
+            // Draw polygons ------------------------------------------------
+            case b2Shape::e_polygon:
+            {
+                b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
+                int32 count = polygonShape->m_count;
+                b2Vec2 prev, v;
+
+                for (int32 i = 0; i < count; ++i)
+                {
+                    v = b->GetWorldPoint(polygonShape->m_vertices[i]);
+                    if (i > 0)
+                        DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), RED);
+
+                    prev = v;
+                }
+
+                v = b->GetWorldPoint(polygonShape->m_vertices[0]);
+                DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), RED);
+            }
+            break;
+
+            // Draw chains contour -------------------------------------------
+            case b2Shape::e_chain:
+            {
+                b2ChainShape* shape = (b2ChainShape*)f->GetShape();
+                b2Vec2 prev, v;
+
+                for (int32 i = 0; i < shape->m_count; ++i)
+                {
+                    v = b->GetWorldPoint(shape->m_vertices[i]);
+                    if (i > 0)
+                        DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), GREEN);
+                    prev = v;
+                }
+
+                v = b->GetWorldPoint(shape->m_vertices[0]);
+                DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), GREEN);
+            }
+            break;
+
+            // Draw a single segment(edge) ----------------------------------
+            case b2Shape::e_edge:
+            {
+                b2EdgeShape* shape = (b2EdgeShape*)f->GetShape();
+                b2Vec2 v1, v2;
+
+                v1 = b->GetWorldPoint(shape->m_vertex0);
+                v1 = b->GetWorldPoint(shape->m_vertex1);
+                DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), BLUE);
+            }
+            break;
+            }
+
+            // TODO 1: If mouse button 1 is pressed ...
+            // App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN
+            // test if the current body contains mouse position
+            if (body_clicked == nullptr && mouse_joint == nullptr && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                if (f->TestPoint(mouse_position)) {
+                    body_clicked = b;
+                }
+
+            }
+        }
+    }
+
+    // If a body was selected we will attach a mouse joint to it
+    // so we can pull it around
+    // TODO 2: If a body was selected, create a mouse joint
+    // using mouse_joint class property
+    if (body_clicked != nullptr) {
+        b2MouseJointDef def;
+        def.bodyA = ground;
+        def.bodyB = body_clicked;
+        def.target = mouse_position;
+        def.damping = 0.5f;
+        def.stiffness = 2.0f;
+        def.maxForce = 100.0f * body_clicked->GetMass();
+        mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
+    }
+
+    // TODO 3: If the player keeps pressing the mouse button, update
+    // target position and draw a red line between both anchor points
+    if (mouse_joint != nullptr && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        mouse_joint->SetTarget(mouse_position);
+        DrawLine(METERS_TO_PIXELS(mouse_joint->GetBodyB()->GetPosition().x), METERS_TO_PIXELS(mouse_joint->GetBodyB()->GetPosition().y), METERS_TO_PIXELS(mouse_position.x), METERS_TO_PIXELS(mouse_position.y), BLACK);
+    }
+    else if (mouse_joint != nullptr) {
+        world->DestroyJoint(mouse_joint);
+        mouse_joint = nullptr;
+        body_clicked = nullptr;
+    }
 
     return UPDATE_CONTINUE;
 }
