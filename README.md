@@ -4,6 +4,8 @@
 
 A simple pinball arcade simulator with [Box2D](https://box2d.org/) physics, featuring an eyeball as the ball and thumbs as flappers.
 
+[Original Repository](https://github.com/JiaHaoZhao05/Thumbus)
+
 ## Key Features
 
 * {Feature01}
@@ -19,7 +21,7 @@ A simple pinball arcade simulator with [Box2D](https://box2d.org/) physics, feat
 * Key 1 -> Spawn ball
 * Key F1 -> Debug
 
-&nbsp;	\*(While debugging you can click and drag the ball)
+ 	\*(While debugging you can click and drag the ball)
 
 ## Developers
 
