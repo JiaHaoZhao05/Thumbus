@@ -4,7 +4,6 @@
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
-#include "Flipper.h"
 
 #define PIXELS_PER_METER 50.0f
 #define METER_PER_PIXEL (1.0f / PIXELS_PER_METER)

@@ -2,7 +2,6 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
-#include "Flipper.h"
 
 #include "p2Point.h"
 #include <math.h>
@@ -41,7 +40,7 @@ bool ModulePhysics::Start()
     groundDef.position.Set(0, 0);
     ground = world->CreateBody(&groundDef);
 
-    Flipper left(50, 100, 5.0f, 0.3f, 190, 600, world, ground, leftPaddle, leftJoint);
+    CreateFlipper(50, 100, 5.0f, 0.3f, 190, 600);
 
     //// --- Paddle fixture ---
     //b2PolygonShape paddleShape;
@@ -144,39 +143,39 @@ update_status ModulePhysics::PreUpdate()
 {
     world->Step(1.0f / 60.0f, 6, 2);
 
-    // LEFT PADDLE
-    if (IsKeyDown(KEY_LEFT))
-    {
-        leftJoint->EnableMotor(false);
-        if (IsKeyPressed(KEY_LEFT))
-            leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
-    }
-    else
-    {
-        float leftAngle = leftPaddle->GetAngle();
-        float leftTarget = -30 * DEGTORAD;
-        float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
-        leftJoint->EnableMotor(true);
-        leftJoint->SetMotorSpeed(leftSpeed);
-        leftJoint->SetMaxMotorTorque(50.0f);
-    }
+    //// LEFT PADDLE
+    //if (IsKeyDown(KEY_LEFT))
+    //{
+    //    leftJoint->EnableMotor(false);
+    //    if (IsKeyPressed(KEY_LEFT))
+    //        leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
+    //}
+    //else
+    //{
+    //    float leftAngle = leftPaddle->GetAngle();
+    //    float leftTarget = -30 * DEGTORAD;
+    //    float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
+    //    leftJoint->EnableMotor(true);
+    //    leftJoint->SetMotorSpeed(leftSpeed);
+    //    leftJoint->SetMaxMotorTorque(50.0f);
+    //}
 
-    // RIGHT PADDLE
-    if (IsKeyDown(KEY_RIGHT))
-    {
-        rightJoint->EnableMotor(false);
-        if (IsKeyPressed(KEY_RIGHT))
-            rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
-    }
-    else
-    {
-        float rightAngle = rightPaddle->GetAngle();
-        float rightTarget = 30 * DEGTORAD;
-        float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
-        rightJoint->EnableMotor(true);
-        rightJoint->SetMotorSpeed(rightSpeed);
-        rightJoint->SetMaxMotorTorque(50.0f);
-    }
+    //// RIGHT PADDLE
+    //if (IsKeyDown(KEY_RIGHT))
+    //{
+    //    rightJoint->EnableMotor(false);
+    //    if (IsKeyPressed(KEY_RIGHT))
+    //        rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
+    //}
+    //else
+    //{
+    //    float rightAngle = rightPaddle->GetAngle();
+    //    float rightTarget = 30 * DEGTORAD;
+    //    float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
+    //    rightJoint->EnableMotor(true);
+    //    rightJoint->SetMotorSpeed(rightSpeed);
+    //    rightJoint->SetMaxMotorTorque(50.0f);
+    //}
 
     //SPRING CONTROL -> KEYDOWN
     float currentTranslation = springPrismatic->GetJointTranslation();
@@ -230,12 +229,12 @@ update_status ModulePhysics::PostUpdate()
     if (!debug)
         return UPDATE_CONTINUE;
 
-    // --- Draw paddles ---
-    b2Vec2 lPos = leftPaddle->GetPosition();
-    float lAngle = leftPaddle->GetAngle() * RADTODEG;
+    //// --- Draw paddles ---
+    //b2Vec2 lPos = leftPaddle->GetPosition();
+    //float lAngle = leftPaddle->GetAngle() * RADTODEG;
 
-    b2Vec2 rPos = rightPaddle->GetPosition();
-    float rAngle = rightPaddle->GetAngle() * RADTODEG;
+    //b2Vec2 rPos = rightPaddle->GetPosition();
+    //float rAngle = rightPaddle->GetAngle() * RADTODEG;
 
 
     // Bonus code: this will iterate all objects in the world and draw the circles
@@ -397,46 +396,41 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
 }
 
 PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, float friction, int x, int y) {
-    
     PhysBody* pbody = new PhysBody();
 
     b2PolygonShape paddleShape;
-    paddleShape.SetAsBox(PIXELS_TO_METERS(50), PIXELS_TO_METERS(10)); // 100x20 pixels
+    paddleShape.SetAsBox(PIXELS_TO_METERS(width / 2), PIXELS_TO_METERS(height / 2));
 
     b2FixtureDef paddleFixture;
     paddleFixture.shape = &paddleShape;
-    paddleFixture.density = 5.0f;
-    paddleFixture.friction = 0.3f;
+    paddleFixture.density = density;
+    paddleFixture.friction = friction;
 
-    // --- LEFT PADDLE ---
     b2BodyDef Def;
     Def.type = b2_dynamicBody;
-    // Center of paddle is half-width to the right of pivot
-    Def.position.Set(PIXELS_TO_METERS(140 + 50), PIXELS_TO_METERS(600));
-    Paddle = world->CreateBody(&Def);
+    Def.position.Set(PIXELS_TO_METERS(x + width / 2), PIXELS_TO_METERS(y));
+    b2Body* Paddle = world->CreateBody(&Def);
     Paddle->CreateFixture(&paddleFixture);
 
     b2RevoluteJointDef JointDef;
     JointDef.bodyA = ground;
-    JointDef.bodyB = leftPaddle;
-
-    // Pivot at left side of paddle (base)
-    JointDef.localAnchorA.Set(PIXELS_TO_METERS(140), PIXELS_TO_METERS(600));
-    JointDef.localAnchorB.Set(-PIXELS_TO_METERS(50), 0); // relative to paddle center
+    JointDef.bodyB = Paddle;
+    JointDef.localAnchorA.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+    JointDef.localAnchorB.Set(-PIXELS_TO_METERS(width / 2), 0);
 
     JointDef.enableLimit = true;
-    JointDef.lowerAngle = -15 * DEGTORAD; // resting downward
-    JointDef.upperAngle = 30 * DEGTORAD;  // max upward flip
+    JointDef.lowerAngle = -15 * DEGTORAD;
+    JointDef.upperAngle = 30 * DEGTORAD;
 
     JointDef.enableMotor = true;
     JointDef.maxMotorTorque = 100.0f;
 
-    b2Joint Joint();
+    b2RevoluteJoint* joint = (b2RevoluteJoint*)world->CreateJoint(&JointDef);
 
-    Joint = (b2RevoluteJoint*)world->CreateJoint(&JointDef);
-
-
+    pbody->body = Paddle;
+    return pbody;
 }
+
 
 PhysBody* ModulePhysics::CreateDeathZone()
 {
