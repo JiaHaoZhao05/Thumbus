@@ -40,8 +40,6 @@ bool ModulePhysics::Start()
     groundDef.position.Set(0, 0);
     ground = world->CreateBody(&groundDef);
 
-    CreateFlipper(50, 100, 5.0f, 0.3f, 190, 600);
-
     //// --- Paddle fixture ---
     //b2PolygonShape paddleShape;
     //paddleShape.SetAsBox(PIXELS_TO_METERS(50), PIXELS_TO_METERS(10)); // 100x20 pixels

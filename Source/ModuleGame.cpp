@@ -146,6 +146,7 @@ public:
 	}
 
 	void Update() {
+		//Draw
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		Vector2 position{ (float)x, (float)y };
@@ -155,6 +156,23 @@ public:
 		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		//Input interaction
+		//if (IsKeyDown(KEY_LEFT))
+		//{
+		//	leftJoint->EnableMotor(false);
+		//	if (IsKeyPressed(KEY_LEFT))
+		//		leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
+		//}
+		//else
+		//{
+		//	float leftAngle = leftPaddle->GetAngle();
+		//	float leftTarget = -30 * DEGTORAD;
+		//	float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
+		//	leftJoint->EnableMotor(true);
+		//	leftJoint->SetMotorSpeed(leftSpeed);
+		//	leftJoint->SetMaxMotorTorque(50.0f);
+		//}
 	}
 private:
 	Texture2D texture;
@@ -331,6 +349,9 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
+
+	//flippers
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 190, 600, this, bumperTex));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
