@@ -47,20 +47,12 @@ public:
 	bool CleanUp();
 
 	PhysBody* CreateBall(int x, int y, int radius);
-	PhysBody* CreateFlipper(int height, int width, float density, float friction, int x, int y);
+	PhysBody* CreateFlipper(int height, int width, float density, float friction, int x, int y, int id);
 	PhysBody* CreateBumper(int x, int y, int radius);
 	PhysBody* CreateDeathZone();
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
 	PhysBody* CreateChainTriangle(int x, int y, const int* points, int size);
-	PhysBody* CreateChainSensor(int x, int y, const int* points, int size);
-	
-	// Paddles and joints
-	b2Body* leftPaddle = nullptr;
-	b2Body* rightPaddle = nullptr;
-	b2RevoluteJoint* leftJoint = nullptr;
-	b2RevoluteJoint* rightJoint = nullptr;
-
-	
+	PhysBody* CreateChainSensor(int x, int y, const int* points, int size);	
 
 private:
 

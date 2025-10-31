@@ -137,12 +137,14 @@ private:
 class Flipper : public PhysicEntity
 {
 public:
-	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y), _listener)
+	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture, int id)
+		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y, id), _listener)
 		, texture(_texture) 
 	{
-
-		
+		_id = id;
+		if (_id == 1) {
+			leftPaddle; //how do I make the left flipper get the leftPaddle and the leftJoint values? and the same for the right one
+		}
 	}
 
 	void Update() {
@@ -157,25 +159,52 @@ public:
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
-		//Input interaction
-		//if (IsKeyDown(KEY_LEFT))
-		//{
-		//	leftJoint->EnableMotor(false);
-		//	if (IsKeyPressed(KEY_LEFT))
-		//		leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
-		//}
-		//else
-		//{
-		//	float leftAngle = leftPaddle->GetAngle();
-		//	float leftTarget = -30 * DEGTORAD;
-		//	float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
-		//	leftJoint->EnableMotor(true);
-		//	leftJoint->SetMotorSpeed(leftSpeed);
-		//	leftJoint->SetMaxMotorTorque(50.0f);
-		//}
+	}
+
+	void Move() {
+		if (_id == 1) {
+			if (IsKeyDown(KEY_LEFT))
+			{
+				leftJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_LEFT))
+					leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
+			}
+			else
+			{
+				float leftAngle = leftPaddle->GetAngle();
+				float leftTarget = -30 * DEGTORAD;
+				float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
+				leftJoint->EnableMotor(true);
+				leftJoint->SetMotorSpeed(leftSpeed);
+				leftJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
+
+		if (_id == 2) {
+			if (IsKeyDown(KEY_RIGHT))
+			{
+				rightJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_RIGHT))
+					rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
+			}
+			else
+			{
+				float rightAngle = rightPaddle->GetAngle();
+				float rightTarget = 30 * DEGTORAD;
+				float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
+				rightJoint->EnableMotor(true);
+				rightJoint->SetMotorSpeed(rightSpeed);
+				rightJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
 	}
 private:
 	Texture2D texture;
+	int _id;
+	b2Body* leftPaddle = nullptr;
+	b2Body* rightPaddle = nullptr;
+	b2RevoluteJoint* leftJoint = nullptr;
+	b2RevoluteJoint* rightJoint = nullptr;
 };
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -351,7 +380,7 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 190, 600, this, bumperTex));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 190, 600, this, bumperTex, 1));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();

@@ -393,7 +393,7 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
     return pbody;
 }
 
-PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, float friction, int x, int y) {
+PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, float friction, int x, int y, int id) {
     PhysBody* pbody = new PhysBody();
 
     b2PolygonShape paddleShape;
