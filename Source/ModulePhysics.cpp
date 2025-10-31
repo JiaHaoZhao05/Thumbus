@@ -409,7 +409,10 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     b2BodyDef Def;
     Def.type = b2_dynamicBody;
     Def.position.Set(PIXELS_TO_METERS(x + width/* / 2*/), PIXELS_TO_METERS(y));
-    Def.angle = -90 * DEGTORAD;
+    if (id == 1)  // left flipper
+        Def.angle = -30 * DEGTORAD;
+    else           // right flipper
+        Def.angle = 30 * DEGTORAD;
     b2Body* Paddle = world->CreateBody(&Def);
     Paddle->CreateFixture(&paddleFixture);
 
