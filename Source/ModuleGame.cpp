@@ -387,8 +387,8 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 190, 600, this, bumperTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 600, this, bumperTex, 2));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 190, 600, this, paddleRightTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 600, this, paddleLeftTex, 2));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();

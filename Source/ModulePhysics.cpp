@@ -427,6 +427,7 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     JointDef.maxMotorTorque = 100.0f;
 
     b2RevoluteJoint* joint = (b2RevoluteJoint*)world->CreateJoint(&JointDef);
+    joint->EnableMotor(false);
 
     pbody->body = Paddle;
     pbody->joint = joint;
