@@ -166,6 +166,7 @@ public:
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
+		Move();
 	}
 
 	void Move() {

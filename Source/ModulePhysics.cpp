@@ -398,7 +398,7 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
 
     // Create paddle shape and fixture
     b2PolygonShape paddleShape;
-    paddleShape.SetAsBox(PIXELS_TO_METERS(width / 2), PIXELS_TO_METERS(height / 2));
+    paddleShape.SetAsBox(PIXELS_TO_METERS(width/* / 2*/), PIXELS_TO_METERS(height/* / 2*/));
 
     b2FixtureDef paddleFixture;
     paddleFixture.shape = &paddleShape;
@@ -408,7 +408,8 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     // Create paddle body
     b2BodyDef Def;
     Def.type = b2_dynamicBody;
-    Def.position.Set(PIXELS_TO_METERS(x + width / 2), PIXELS_TO_METERS(y));
+    Def.position.Set(PIXELS_TO_METERS(x + width/* / 2*/), PIXELS_TO_METERS(y));
+    Def.angle = -90 * DEGTORAD;
     b2Body* Paddle = world->CreateBody(&Def);
     Paddle->CreateFixture(&paddleFixture);
 
@@ -420,8 +421,14 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     JointDef.localAnchorB.Set(-PIXELS_TO_METERS(width / 2), 0);
 
     JointDef.enableLimit = true;
-    JointDef.lowerAngle = -15 * DEGTORAD;
-    JointDef.upperAngle = 30 * DEGTORAD;
+    if (id == 1) {
+        JointDef.lowerAngle = -15 * DEGTORAD;
+        JointDef.upperAngle = 30 * DEGTORAD;
+    }
+    else {
+        JointDef.lowerAngle = -30 * DEGTORAD;
+        JointDef.upperAngle = 15 * DEGTORAD;
+    }
 
     JointDef.enableMotor = true;
     JointDef.maxMotorTorque = 100.0f;
