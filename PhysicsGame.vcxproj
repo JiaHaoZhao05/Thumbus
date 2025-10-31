@@ -188,6 +188,7 @@
     <ClInclude Include="Source/ModuleRender.h" />
     <ClInclude Include="Source/ModuleWindow.h" />
     <ClInclude Include="Source/p2Point.h" />
+    <ClInclude Include="Source\Flipper.h" />
     <ClInclude Include="Source\ModuleGame.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Timer.h" />
