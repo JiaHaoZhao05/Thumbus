@@ -32,6 +32,7 @@ public:
 	int width, height;
 	b2Body* body;
 	Module* listener;
+	b2RevoluteJoint* joint = nullptr;
 };
 
 // Module --------------------------------------

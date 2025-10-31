@@ -396,6 +396,7 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
 PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, float friction, int x, int y, int id) {
     PhysBody* pbody = new PhysBody();
 
+    // Create paddle shape and fixture
     b2PolygonShape paddleShape;
     paddleShape.SetAsBox(PIXELS_TO_METERS(width / 2), PIXELS_TO_METERS(height / 2));
 
@@ -404,12 +405,14 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     paddleFixture.density = density;
     paddleFixture.friction = friction;
 
+    // Create paddle body
     b2BodyDef Def;
     Def.type = b2_dynamicBody;
     Def.position.Set(PIXELS_TO_METERS(x + width / 2), PIXELS_TO_METERS(y));
     b2Body* Paddle = world->CreateBody(&Def);
     Paddle->CreateFixture(&paddleFixture);
 
+    // Create joint
     b2RevoluteJointDef JointDef;
     JointDef.bodyA = ground;
     JointDef.bodyB = Paddle;
@@ -426,6 +429,8 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     b2RevoluteJoint* joint = (b2RevoluteJoint*)world->CreateJoint(&JointDef);
 
     pbody->body = Paddle;
+    pbody->joint = joint;
+
     return pbody;
 }
 

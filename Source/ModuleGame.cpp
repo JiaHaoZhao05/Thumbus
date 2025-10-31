@@ -141,10 +141,17 @@ public:
 		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y, id), _listener)
 		, texture(_texture) 
 	{
+		PhysBody* pbody = static_cast<PhysBody*>(body);
 		_id = id;
 		if (_id == 1) {
-			leftPaddle; //how do I make the left flipper get the leftPaddle and the leftJoint values? and the same for the right one
+			leftPaddle = pbody->body;
+			leftJoint = pbody->joint;
 		}
+		else if (_id == 2) {
+			rightPaddle = pbody->body;
+			rightJoint = pbody->joint;
+		}
+
 	}
 
 	void Update() {
@@ -381,6 +388,7 @@ void ModuleGame::CreateWorld() {
 
 	//flippers
 	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 190, 600, this, bumperTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 600, this, bumperTex, 2));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
