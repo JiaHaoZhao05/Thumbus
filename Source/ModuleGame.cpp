@@ -173,7 +173,7 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-		if (IsKeyPressed(KEY_ONE))
+	if (IsKeyPressed(KEY_ONE))
 	{
 		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ballTex));
 

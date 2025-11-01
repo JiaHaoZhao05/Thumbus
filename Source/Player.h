@@ -19,4 +19,8 @@ public:
 	int highScore = 0 ;
 	int balls = 3;
 	int currentBalls = 0;
+
+	PhysBody* pbody = nullptr;
+	Texture2D tex;
+	float ballRadius = 12.5f;
 };
