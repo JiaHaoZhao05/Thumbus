@@ -5,6 +5,14 @@
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 
+#define PIXELS_PER_METER 50.0f
+#define METER_PER_PIXEL (1.0f / PIXELS_PER_METER)
+#define METERS_TO_PIXELS(m) ((float)((m) * PIXELS_PER_METER))
+#define PIXELS_TO_METERS(p) ((float)(p) / PIXELS_PER_METER)
+
+
+#define DEGTORAD 0.0174532925199432957f
+#define RADTODEG 57.295779513082320876f
 
 class PhysicEntity
 {
@@ -124,6 +132,87 @@ public:
 private:
 	Texture2D texture;
 
+};
+
+class Flipper : public PhysicEntity
+{
+public:
+	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture, int id)
+		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y, id), _listener)
+		, texture(_texture) 
+	{
+		PhysBody* pbody = static_cast<PhysBody*>(body);
+		_id = id;
+		if (_id == 1) {
+			leftPaddle = pbody->body;
+			leftJoint = pbody->joint;
+		}
+		else if (_id == 2) {
+			rightPaddle = pbody->body;
+			rightJoint = pbody->joint;
+		}
+
+	}
+
+	void Update() {
+		//Draw
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Vector2 position{ (float)x, (float)y };
+		float scale = 1.0f;
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
+		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
+		float rotation = (body->GetRotation() * RAD2DEG)+85;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		Move();
+	}
+
+	void Move() {
+		if (_id == 1) {
+			if (IsKeyDown(KEY_LEFT))
+			{
+				leftJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_LEFT))
+					leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
+			}
+			else
+			{
+				float leftAngle = leftPaddle->GetAngle();
+				float leftTarget = -120 * DEGTORAD;
+				float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
+				leftJoint->EnableMotor(true);
+				leftJoint->SetMotorSpeed(leftSpeed);
+				leftJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
+
+		if (_id == 2) {
+			if (IsKeyDown(KEY_RIGHT))
+			{
+				rightJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_RIGHT))
+					rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
+			}
+			else
+			{
+				float rightAngle = rightPaddle->GetAngle();
+				float rightTarget = 120 * DEGTORAD;
+				float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
+				rightJoint->EnableMotor(true);
+				rightJoint->SetMotorSpeed(rightSpeed);
+				rightJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
+	}
+private:
+	Texture2D texture;
+	int _id;
+	b2Body* leftPaddle = nullptr;
+	b2Body* rightPaddle = nullptr;
+	b2RevoluteJoint* leftJoint = nullptr;
+	b2RevoluteJoint* rightJoint = nullptr;
 };
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -298,8 +387,14 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
+	//flippers
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 200, 620, this, paddleLeftTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 620, this, paddleRightTex, 2));
+
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
 	//entities.emplace_back(deathZone, deathZone->listener);
 }
 
+//Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
+// the flippers move
