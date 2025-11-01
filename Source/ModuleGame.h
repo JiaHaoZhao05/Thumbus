@@ -8,10 +8,7 @@
 #include "raylib.h"
 #include <vector>
 
-class PhysBody;
 class PhysicEntity;
-
-
 class ModuleGame : public Module
 {
 public:
@@ -25,7 +22,9 @@ public:
 public:
 	void ModuleGame::CreateWorld();
 	std::vector<PhysicEntity*> entities;
+
 	PhysicEntity* ball;
+
 
 	PhysBody* deathZone;
 

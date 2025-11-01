@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
 #include "ModuleGame.h"
+#include "PhysicEntity.h"
 
 #include "p2Point.h"
 #include <math.h>
@@ -525,7 +526,26 @@ void ModulePhysics::BeginContact(b2Contact* contact)
     b2BodyUserData dataA = contact->GetFixtureA()->GetBody()->GetUserData();
     b2BodyUserData dataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-    /*PhysBody* ball = App->scene_intro->ball;
+    PhysBody* physA = (PhysBody*)dataB.pointer;
+    PhysBody* physB = (PhysBody*)dataB.pointer;
+
+    PhysBody* ball = App->scene_intro->ball->physBody;
+
+    for (auto& pEntity : App->scene_intro->entities) {
+
+        if (physA == pEntity->physBody && physB == ball) {
+            if (pEntity->type == 1) { //check bumpers
+                App->scene_intro->currentScore += 75;
+            }
+            if (pEntity->type == 2) { //check triangles
+                App->scene_intro->currentScore += 50;
+            }
+            if (pEntity->type == 3) { //check background
+
+            }
+        }
+    }
+    /*
     PhysBody* physB = (PhysBody*)dataB.pointer;
 
     if (physA && physA->listener != NULL)

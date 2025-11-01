@@ -5,6 +5,7 @@
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 #include "ModuleGame.h"
+#include "PhysicEntity.h"
 
 #include "Application.h"
 
