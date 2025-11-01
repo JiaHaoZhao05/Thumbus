@@ -33,6 +33,7 @@ public:
 	b2Body* body;
 	Module* listener;
 	b2RevoluteJoint* joint = nullptr;
+	b2PrismaticJoint* prismaticJoint = nullptr;
 };
 
 // Module --------------------------------------
@@ -49,6 +50,7 @@ public:
 
 	PhysBody* CreateBall(int x, int y, int radius);
 	PhysBody* CreateFlipper(int height, int width, float density, float friction, int x, int y, int id);
+	PhysBody* CreateSpring(int height, int width, float density, float friction, int x, int y);
 	PhysBody* CreateBumper(int x, int y, int radius);
 	PhysBody* CreateDeathZone();
 	PhysBody* CreateChain(int x, int y, const int* points, int size);

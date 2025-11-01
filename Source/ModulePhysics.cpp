@@ -457,6 +457,44 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     return pbody;
 }
 
+PhysBody* ModulePhysics::CreateSpring(int height, int width, float density, float friction, int x, int y) {
+    PhysBody* pbody = new PhysBody;
+    
+    b2BodyDef springDef;
+    springDef.type = b2_dynamicBody;
+    springDef.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+    springDef.fixedRotation = true; // que no rote
+    springBody = world->CreateBody(&springDef);
+
+    b2PolygonShape springShape;
+    springShape.SetAsBox(PIXELS_TO_METERS(height), PIXELS_TO_METERS(width)); // 20x120 píxeles
+
+    b2FixtureDef springFixture;
+    springFixture.shape = &springShape;
+    springFixture.density = density;     // masa moderada para que pueda moverse
+    springFixture.friction = friction;
+    springBody->CreateFixture(&springFixture);
+
+    // --- Cuerpo estático de anclaje superior ---
+    b2BodyDef anchorDef;
+    anchorDef.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y-60)); // punto fijo arriba
+    b2Body* anchor = world->CreateBody(&anchorDef);
+
+    // --- Prismatic joint: solo movimiento vertical ---
+    b2PrismaticJointDef prismaticDef;
+    prismaticDef.Initialize(anchor, springBody, anchor->GetPosition(), b2Vec2(0.0f, 1.0f));
+    prismaticDef.enableLimit = true;
+    prismaticDef.lowerTranslation = 0.0f; // punto de reposo
+    prismaticDef.upperTranslation = PIXELS_TO_METERS(80); // 80 px hacia abajo máximo
+    springPrismatic = (b2PrismaticJoint*)world->CreateJoint(&prismaticDef);
+    springPrismatic->SetLimits(prismaticDef.lowerTranslation, prismaticDef.upperTranslation);
+
+    pbody->body = springBody;
+    pbody->prismaticJoint = springPrismatic;
+
+    return pbody;
+}
+
 
 PhysBody* ModulePhysics::CreateDeathZone()
 {
