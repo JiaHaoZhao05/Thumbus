@@ -146,6 +146,7 @@ public:
 		if (_id == 1) {
 			leftPaddle = pbody->body;
 			leftJoint = pbody->joint;
+
 		}
 		else if (_id == 2) {
 			rightPaddle = pbody->body;
@@ -163,7 +164,9 @@ public:
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
 		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = (body->GetRotation() * RAD2DEG)+85;
+		float rotation = body->GetRotation() * RAD2DEG;
+		if (_id == 1) rotation -= 13;
+		if (_id == 2) rotation += 13;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
 		Move();
@@ -180,7 +183,7 @@ public:
 			else
 			{
 				float leftAngle = leftPaddle->GetAngle();
-				float leftTarget = -120 * DEGTORAD;
+				float leftTarget = -30 * DEGTORAD;
 				float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
 				leftJoint->EnableMotor(true);
 				leftJoint->SetMotorSpeed(leftSpeed);
@@ -198,7 +201,7 @@ public:
 			else
 			{
 				float rightAngle = rightPaddle->GetAngle();
-				float rightTarget = 120 * DEGTORAD;
+				float rightTarget = 30 * DEGTORAD;
 				float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
 				rightJoint->EnableMotor(true);
 				rightJoint->SetMotorSpeed(rightSpeed);
@@ -366,9 +369,9 @@ static constexpr int outerBackground[102] = {
 	167, 595,
 	180, 618,
 	177, 628,
-	164, 627,
-	139, 630,
-	115, 640,
+	160, 617,
+	137, 620,
+	97, 640,
 	97, 706,
 	82, 724,
 	77, 745,
@@ -484,12 +487,12 @@ void ModuleGame::CreateWorld() {
 	//triangles
 	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle1, 10, this, triangle1Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
+	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle3, 10, this, triangle3Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 200, 694, this, paddleLeftTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 694, this, paddleRightTex, 2));
+	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 663, this, paddleLeftTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 663, this, paddleRightTex, 2));
 
 	//spring
 	entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, paddleLeftTex));
