@@ -146,6 +146,7 @@ public:
 		if (_id == 1) {
 			leftPaddle = pbody->body;
 			leftJoint = pbody->joint;
+
 		}
 		else if (_id == 2) {
 			rightPaddle = pbody->body;
@@ -163,7 +164,9 @@ public:
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
 		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = (body->GetRotation() * RAD2DEG)+75;
+		float rotation = body->GetRotation() * RAD2DEG;
+		if (_id == 1) rotation += 75.0f;
+		if (_id == 2) rotation -= 75.0f;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
 		Move();
@@ -415,8 +418,8 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 200, 694, this, paddleLeftTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 694, this, paddleRightTex, 2));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 185, 685, this, paddleLeftTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 685, this, paddleRightTex, 2));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
