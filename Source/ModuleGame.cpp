@@ -411,7 +411,7 @@ void ModuleGame::CreateWorld() {
 	//triangles
 	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle1, 10, this, triangle1Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
+	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle3, 10, this, triangle3Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
