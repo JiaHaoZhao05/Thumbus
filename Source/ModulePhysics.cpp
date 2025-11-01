@@ -419,7 +419,7 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     }
 
     // Optional: start angled inward
-    Def.angle = -90 * DEGTORAD;
+    /*Def.angle = -90 * DEGTORAD;*/
 
     b2Body* Paddle = world->CreateBody(&Def);
     Paddle->CreateFixture(&paddleFixture);
@@ -433,8 +433,9 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
 
     if (id == 2) {
         // Right flipper: rotate counter-clockwise
-        Def.position.Set(PIXELS_TO_METERS(x - width), PIXELS_TO_METERS(y)); // body center
         JointDef.localAnchorB.Set(PIXELS_TO_METERS(width), 0); // paddle anchor
+        JointDef.lowerAngle = -105 * DEGTORAD;
+        JointDef.upperAngle = -60 * DEGTORAD;
     }
     else {
         // Left flipper: rotate clockwise
