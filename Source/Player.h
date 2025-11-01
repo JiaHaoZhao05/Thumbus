@@ -13,6 +13,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void RespawnBall();
 public:
 	int currentScore = 0;
 	int previousScore = 0;
@@ -23,4 +24,5 @@ public:
 	PhysBody* pbody = nullptr;
 	Texture2D tex;
 	float ballRadius = 12.5f;
+	Vector2 startPos = {465,550};
 };

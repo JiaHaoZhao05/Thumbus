@@ -4,7 +4,7 @@
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
-
+#include "Player.h"
 
 class PhysicEntity
 {
@@ -175,7 +175,7 @@ update_status ModuleGame::Update()
 {
 	if (IsKeyPressed(KEY_ONE))
 	{
-		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ballTex));
+		App->player->RespawnBall(); //As long as there are balls left pressing 1 will respawn the ball
 
 	}
 	 

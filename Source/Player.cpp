@@ -16,8 +16,9 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
-	pbody = App->physics->CreateBall(465, 550, ballRadius);
+	pbody = App->physics->CreateBall(startPos.x, startPos.y, ballRadius);
 	tex = LoadTexture("Assets/ball.png");
+    currentScore = 0;
 	return true;
 }
 
@@ -26,6 +27,7 @@ bool ModulePlayer::CleanUp()
 {
 	LOG("Unloading player");
     if (pbody != nullptr){
+        App->physics->world->DestroyBody(pbody->body);
         delete pbody;
         pbody = nullptr;
     }
@@ -43,4 +45,14 @@ update_status ModulePlayer::Update()
 
 
     return UPDATE_CONTINUE;
+}
+
+// Ball respawn as long as there are balls left
+void ModulePlayer::RespawnBall() {
+    if (balls > 0 && pbody != nullptr) {
+        balls--;
+        App->physics->world->DestroyBody(pbody->body);
+        delete pbody;
+        pbody = App->physics->CreateBall(startPos.x, startPos.y, ballRadius);
+    }
 }
