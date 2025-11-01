@@ -396,8 +396,8 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
 PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, float friction, int x, int y, int id) {
     PhysBody* pbody = new PhysBody();
 
-    int rotationfactor = 65;
-    int rotationfactor2 = rotationfactor + 5;
+    int rotationfactor2 = 30;
+    int rotationfactor = rotationfactor2 + 5;
 
     // Create paddle shape and fixture
     b2PolygonShape paddleShape;
@@ -432,12 +432,12 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     JointDef.localAnchorA.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
     if (id == 2) {   // Right flipper: pivot on RIGHT end of paddle
-        JointDef.localAnchorB.Set(PIXELS_TO_METERS(width), 0);
+        JointDef.localAnchorB.Set(PIXELS_TO_METERS(width)/2, 0);
         JointDef.lowerAngle = -rotationfactor * DEGTORAD;
         JointDef.upperAngle = rotationfactor2 * DEGTORAD;
     }
     else {         // Left flipper: pivot on LEFT end of paddle
-        JointDef.localAnchorB.Set(-PIXELS_TO_METERS(width), 0);
+        JointDef.localAnchorB.Set(-PIXELS_TO_METERS(width)/2, 0);
         JointDef.lowerAngle = -rotationfactor2 * DEGTORAD;
         JointDef.upperAngle = rotationfactor * DEGTORAD;
     }
