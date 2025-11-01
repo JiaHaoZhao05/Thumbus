@@ -276,7 +276,7 @@ update_status ModuleGame::Update()
 	return UPDATE_CONTINUE;
 }
 
-static constexpr int outerBackground[48] = {
+static constexpr int outerBackground[102] = {
 	241, 6,
 	147, 25,
 	81, 81,
@@ -285,22 +285,49 @@ static constexpr int outerBackground[48] = {
 	3, 340,
 	8, 414,
 	26, 477,
-	45, 522,
-	133, 585,
-	90, 637,
-	86, 708,
-	397, 716,
-	398, 634,
-	368, 584,
-	443, 530,
-	445, 786,
-	479, 783,
-	486, 419,
-	494, 316,
-	482, 219,
-	455, 142,
-	414, 78,
-	346, 22
+	31, 504,
+	96, 576,
+	111, 579,
+	146, 582,
+	155, 590,
+	167, 595,
+	180, 618,
+	177, 628,
+	164, 627,
+	139, 630,
+	115, 640,
+	97, 706,
+	82, 724,
+	77, 745,
+	68, 763,
+	92, 771,
+	111, 782,
+	125, 798,
+	126, 849,
+	365, 853,
+	371, 798,
+	380, 784,
+	395, 773,
+	397, 709,
+	380, 696,
+	372, 658,
+	352, 628,
+	312, 620,
+	325, 598,
+	344, 581,
+	381, 579,
+	401, 577,
+	448, 537,
+	451, 784,
+	478, 784,
+	478, 457,
+	491, 357,
+	488, 270,
+	472, 194,
+	442, 118,
+	398, 60,
+	347, 25,
+	286, 6
 };
 
 static constexpr int triangle1[10] = {
@@ -371,7 +398,7 @@ static constexpr int thumbusLeft[28] = {
 void ModuleGame::CreateWorld() {
 
 	//background
-	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 48, this, outerBackgroundTex));
+	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 102, this, outerBackgroundTex));
 
 	//bumpers
 	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 21, this, bumperTex));
@@ -382,14 +409,14 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Bumper(App->physics, bumper6Pos.x, bumper6Pos.y, 11, this, bumperMiniTex));
 
 	//triangles
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle1, 10, this, triangle1Tex));
+	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle1, 10, this, triangle1Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 200, 620, this, paddleLeftTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 620, this, paddleRightTex, 2));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 200, 694, this, paddleLeftTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 694, this, paddleRightTex, 2));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
