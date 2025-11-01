@@ -52,20 +52,18 @@ public:
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
 	PhysBody* CreateChainTriangle(int x, int y, const int* points, int size);
 	PhysBody* CreateChainSensor(int x, int y, const int* points, int size);
-	
+
 	// Paddles and joints
 	b2Body* leftPaddle = nullptr;
 	b2Body* rightPaddle = nullptr;
 	b2RevoluteJoint* leftJoint = nullptr;
 	b2RevoluteJoint* rightJoint = nullptr;
 
-	
+	b2World* world = nullptr; //public for player elimination
 
 private:
 
 	bool debug;
-
-	b2World* world = nullptr;
 
 
 	// Plunger / spring
@@ -73,8 +71,9 @@ private:
 	b2PrismaticJoint* springPrismatic = nullptr;
 	float springForce = 0.0f;
 	float maxSpringForce = 30.0f;
-
-	
+	//for the click and drag
+	b2MouseJoint* mouse_joint;
+	b2Body* ground;
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
