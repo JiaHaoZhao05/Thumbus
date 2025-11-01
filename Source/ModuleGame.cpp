@@ -163,9 +163,10 @@ public:
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
 		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = body->GetRotation() * RAD2DEG;
+		float rotation = (body->GetRotation() * RAD2DEG)+85;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
+		Move();
 	}
 
 	void Move() {
@@ -179,7 +180,7 @@ public:
 			else
 			{
 				float leftAngle = leftPaddle->GetAngle();
-				float leftTarget = -30 * DEGTORAD;
+				float leftTarget = -120 * DEGTORAD;
 				float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
 				leftJoint->EnableMotor(true);
 				leftJoint->SetMotorSpeed(leftSpeed);
@@ -197,7 +198,7 @@ public:
 			else
 			{
 				float rightAngle = rightPaddle->GetAngle();
-				float rightTarget = 30 * DEGTORAD;
+				float rightTarget = 120 * DEGTORAD;
 				float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
 				rightJoint->EnableMotor(true);
 				rightJoint->SetMotorSpeed(rightSpeed);
@@ -387,8 +388,8 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 190, 600, this, paddleLeftTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 600, this, paddleRightTex, 2));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 200, 620, this, paddleLeftTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 50, 10, 5.0f, 0.3f, 310, 620, this, paddleRightTex, 2));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
