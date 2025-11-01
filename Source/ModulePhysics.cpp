@@ -401,7 +401,7 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
 
     // Create paddle shape and fixture
     b2PolygonShape paddleShape;
-    paddleShape.SetAsBox(PIXELS_TO_METERS(width), PIXELS_TO_METERS(height));
+    paddleShape.SetAsBox(PIXELS_TO_METERS(50), PIXELS_TO_METERS(10));
 
     b2FixtureDef paddleFixture;
     paddleFixture.shape = &paddleShape;
@@ -414,11 +414,11 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
 
     if (id == 2) {
         // Right flipper: shift left from anchor
-        Def.position.Set(PIXELS_TO_METERS(x - width), PIXELS_TO_METERS(y));
+        Def.position.Set(PIXELS_TO_METERS(x + width/2), PIXELS_TO_METERS(y));
     }
     else {
         // Left flipper: shift right from anchor
-        Def.position.Set(PIXELS_TO_METERS(x + width), PIXELS_TO_METERS(y));
+        Def.position.Set(PIXELS_TO_METERS(x -  width/2), PIXELS_TO_METERS(y));
     }
 
     b2Body* Paddle = world->CreateBody(&Def);
@@ -429,15 +429,17 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     JointDef.bodyA = ground;
     JointDef.bodyB = Paddle;
 
-    JointDef.localAnchorA.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+    
 
     if (id == 2) {   // Right flipper: pivot on RIGHT end of paddle
-        JointDef.localAnchorB.Set(PIXELS_TO_METERS(width)/2, 0);
+        JointDef.localAnchorA.Set(PIXELS_TO_METERS(353), PIXELS_TO_METERS(y));
+        JointDef.localAnchorB.Set(PIXELS_TO_METERS(50), 0);
         JointDef.lowerAngle = -rotationfactor * DEGTORAD;
         JointDef.upperAngle = rotationfactor2 * DEGTORAD;
     }
     else {         // Left flipper: pivot on LEFT end of paddle
-        JointDef.localAnchorB.Set(-PIXELS_TO_METERS(width)/2, 0);
+        JointDef.localAnchorA.Set(PIXELS_TO_METERS(140), PIXELS_TO_METERS(y));
+        JointDef.localAnchorB.Set(-PIXELS_TO_METERS(50), 0);
         JointDef.lowerAngle = -rotationfactor2 * DEGTORAD;
         JointDef.upperAngle = rotationfactor * DEGTORAD;
     }
