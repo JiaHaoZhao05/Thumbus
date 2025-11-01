@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModuleAudio.h"
 #include "ModuleGame.h"
 #include "PhysicEntity.h"
 #include "player.h"
@@ -410,7 +411,7 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
 PhysBody* ModulePhysics::CreateDeathZone()
 {
     int x = 250;
-    int y = 650;
+    int y = 675;
     int radius = 20;
     PhysBody* pbody = new PhysBody();
 
@@ -632,14 +633,17 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 
     PhysBody* ball = App->player->ball->physBody;
     for (auto& pEntity : App->scene_intro->entities) {
-        LOG("Entity type: %d",pEntity->type);
         if (physA == pEntity->physBody && physB == ball) {
             
             if (pEntity->type == 1) { //check bumpers
                 App->player->currentScore += 75;
+                pEntity->isSwitched = true;
+                App->audio->PlayFx(App->scene_intro->bumperFX);
             }
             if (pEntity->type == 2) { //check triangles
                 App->player->currentScore += 50;
+                pEntity->isSwitched = true;
+                App->audio->PlayFx(App->scene_intro->bumperFX);
             }
             if (pEntity->type == 3) { //check background
 

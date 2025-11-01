@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 #include "Module.h"
+#include "timer.h"
 
 #include "p2Point.h"
 
@@ -30,6 +31,7 @@ public:
 	PhysBody* physBody;
 	Module* listener;
 	int type;
+	bool isSwitched = false;
 
 };
 
@@ -64,9 +66,9 @@ private:
 class Bumper : public PhysicEntity
 {
 public:
-	Bumper(ModulePhysics* physics, int _x, int _y, int _rad, Module* _listener, Texture2D _texture)
+	Bumper(ModulePhysics* physics, int _x, int _y, int _rad, Module* _listener, Texture2D _texture, Texture2D _textureAux)
 		: PhysicEntity(physics->CreateBumper(_x, _y, _rad), _listener)
-		, texture(_texture)
+		, texture(_texture), textureAux(_textureAux)
 	{
 		type = 1;
 		int x, y;
@@ -82,12 +84,19 @@ public:
 
 	void Update() override
 	{
-
-		DrawTexture(texture, posX, posY, WHITE);
+		if (isSwitched) {
+			DrawTexture(texture, posX, posY, WHITE);
+			if (time.ReadSec() > 0.25) isSwitched = false;
+		}
+		else {
+			DrawTexture(textureAux, posX, posY, WHITE);
+			time.Start();
+		}
 	}
 private:
 	Texture2D texture;
-
+	Texture2D textureAux;
+	Timer time;
 };
 
 class Background : public PhysicEntity
@@ -112,18 +121,27 @@ private:
 class Triangle : public PhysicEntity
 {
 public:
-	Triangle(ModulePhysics* physics, int _x, int _y, const int* points, int size, Module* _listener, Texture2D _texture)
+	Triangle(ModulePhysics* physics, int _x, int _y, const int* points, int size, Module* _listener, Texture2D _texture, Texture2D _textureAux)
 		: PhysicEntity(physics->CreateChainTriangle(_x, _y, points, size), _listener)
-		, texture(_texture)
+		, texture(_texture), textureAux(_textureAux)
 	{
 		type = 2;
 	}
 
 	void Update() override
 	{
-		DrawTexture(texture, 0, 0, WHITE);
+		if (isSwitched) {
+			DrawTexture(textureAux, 0, 0, WHITE);
+			if (time.ReadSec() > 0.25) isSwitched = false;
+		}
+		else {
+			DrawTexture(texture, 0, 0, WHITE);
+			time.Start();
+		}
 	}
 private:
 	Texture2D texture;
+	Texture2D textureAux;
+	Timer time;
 
 };

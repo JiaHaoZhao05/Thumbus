@@ -19,22 +19,32 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-public:
 	void ModuleGame::CreateWorld();
+
 	std::vector<PhysicEntity*> entities;
 
 	PhysBody* deathZone;
 
 	//textures
 	Texture2D bumperTex;
+	Texture2D bumperTexAux;
 	Texture2D bumperMiniTex;
+	Texture2D bumperMiniTexAux;
 	Texture2D outerBackgroundTex;
 	Texture2D triangle1Tex;
+	Texture2D triangle1TexAux;
 	Texture2D triangle2Tex;
+	Texture2D triangle2TexAux;
 	Texture2D triangle3Tex;
+	Texture2D triangle3TexAux;
 	Texture2D triangle4Tex;
+	Texture2D triangle4TexAux;
 	Texture2D paddleLeftTex;
 	Texture2D paddleRightTex;
+
+	//sounds
+	unsigned int bumperFX;
+	int bumperFX2;
 
 	//positions
 	Vector2 bumper1Pos = { 150, 300 };

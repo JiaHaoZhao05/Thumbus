@@ -23,15 +23,26 @@ bool ModuleGame::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	//load textures
 	paddleRightTex = LoadTexture("Assets/ThumbRight.png");
 	paddleLeftTex = LoadTexture("Assets/ThumbLeft.png");
-	bumperTex = LoadTexture("Assets/bumper.png");
-	bumperMiniTex = LoadTexture("Assets/bumperMini.png");
+	bumperTex = LoadTexture("Assets/bumper2.png");
+	bumperMiniTex = LoadTexture("Assets/bumperMini2.png");
+	bumperTexAux = LoadTexture("Assets/bumper.png");
+	bumperMiniTexAux = LoadTexture("Assets/bumperMini.png");
 	outerBackgroundTex = LoadTexture("Assets/Map/outerBackground.png");
 	triangle1Tex = LoadTexture("Assets/Map/triangle1.png");
 	triangle2Tex = LoadTexture("Assets/Map/triangle2.png");
 	triangle3Tex = LoadTexture("Assets/Map/triangle3.png");
 	triangle4Tex = LoadTexture("Assets/Map/triangle4.png");
+	triangle1TexAux = LoadTexture("Assets/Map/triangle12.png");
+	triangle2TexAux = LoadTexture("Assets/Map/triangle22.png");
+	triangle3TexAux = LoadTexture("Assets/Map/triangle32.png");
+	triangle4TexAux = LoadTexture("Assets/Map/triangle42.png");
+
+	//load sounds
+	bumperFX = App->audio->LoadFx("Assets/sound.wav");
+	bumperFX2 = App->audio->LoadFx("Assets/sound.wav");
 
 	//rick = LoadTexture("Assets/rick_head.png");
 
@@ -61,6 +72,8 @@ update_status ModuleGame::Update()
 		ball->physBody->body->SetFixedRotation(true);
 		ball->physBody->body->SetFixedRotation(false);
 		*/
+
+
 
 	if (IsKeyPressed(KEY_ONE))
 	{
@@ -104,15 +117,15 @@ static constexpr int outerBackground[48] = {
 	346, 22
 };
 
-static constexpr int triangle1[10] = {
+static constexpr int triangle1[10] = { //bottom right triangle
 	396, 394,
 	409, 395,
 	435, 465,
 	367, 545,
-	345, 544
+	355, 544
 };
 
-static constexpr int triangle2[10] = {
+static constexpr int triangle2[10] = { //bottom left triangle
 	94, 400,
 	109, 399,
 	148, 544,
@@ -120,7 +133,7 @@ static constexpr int triangle2[10] = {
 	54, 468
 };
 
-static constexpr int triangle3[10] = {
+static constexpr int triangle3[10] = { //top right triangle
 	445, 313,
 	429, 357,
 	420, 355,
@@ -128,7 +141,7 @@ static constexpr int triangle3[10] = {
 	403, 260
 };
 
-static constexpr int triangle4[10] = {
+static constexpr int triangle4[10] = { //top left triangle
 	75, 288,
 	67, 290,
 	40, 246,
@@ -169,30 +182,29 @@ static constexpr int thumbusLeft[28] = {
 	229, 684
 };
 
+
 void ModuleGame::CreateWorld() {
 
 	//background
 	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 48, this, outerBackgroundTex));
 
 	//bumpers
-	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 30, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper2Pos.x, bumper2Pos.y, 30, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper3Pos.x, bumper3Pos.y, 30, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper4Pos.x, bumper4Pos.y, 11, this, bumperMiniTex));
-	entities.emplace_back(new Bumper(App->physics, bumper5Pos.x, bumper5Pos.y, 11, this, bumperMiniTex));
-	entities.emplace_back(new Bumper(App->physics, bumper6Pos.x, bumper6Pos.y, 11, this, bumperMiniTex));
+	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 30, this, bumperTex, bumperTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper2Pos.x, bumper2Pos.y, 30, this, bumperTex, bumperTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper3Pos.x, bumper3Pos.y, 30, this, bumperTex, bumperTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper4Pos.x, bumper4Pos.y, 11, this, bumperMiniTex, bumperMiniTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper5Pos.x, bumper5Pos.y, 11, this, bumperMiniTex, bumperMiniTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper6Pos.x, bumper6Pos.y, 11, this, bumperMiniTex, bumperMiniTexAux));
 
 	//triangles
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle1, 10, this, triangle1Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle1, 10, this, triangle1Tex, triangle1TexAux));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex, triangle2TexAux));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex, triangle3TexAux));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex, triangle4TexAux));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
 	//entities.emplace_back(deathZone, deathZone->listener);
 
-	//ball
-	//ball = new Ball(App->physics, ballPos.x, ballPos.y, this, ballTex);
+	//sounds
 }
-

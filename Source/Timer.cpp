@@ -21,3 +21,4 @@ double Timer::ReadSec() const
 {
 	return (GetTime() - started_at);
 }
+
