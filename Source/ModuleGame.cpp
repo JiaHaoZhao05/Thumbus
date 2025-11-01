@@ -163,7 +163,7 @@ public:
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
 		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = (body->GetRotation() * RAD2DEG)+85;
+		float rotation = (body->GetRotation() * RAD2DEG)+75;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
 		Move();
@@ -411,7 +411,7 @@ void ModuleGame::CreateWorld() {
 	//triangles
 	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle1, 10, this, triangle1Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex));
+	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle3, 10, this, triangle3Tex));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
 
 	//flippers
