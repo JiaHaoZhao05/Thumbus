@@ -398,7 +398,7 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
 
     // Create paddle shape and fixture
     b2PolygonShape paddleShape;
-    paddleShape.SetAsBox(PIXELS_TO_METERS(width/* / 2*/), PIXELS_TO_METERS(height/* / 2*/));
+    paddleShape.SetAsBox(PIXELS_TO_METERS(width), PIXELS_TO_METERS(height));
 
     b2FixtureDef paddleFixture;
     paddleFixture.shape = &paddleShape;
@@ -408,11 +408,19 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     // Create paddle body
     b2BodyDef Def;
     Def.type = b2_dynamicBody;
-    Def.position.Set(PIXELS_TO_METERS(x + width/* / 2*/), PIXELS_TO_METERS(y));
-    if (id == 1)  // left flipper
-        Def.angle = -30 * DEGTORAD;
-    else           // right flipper
-        Def.angle = 30 * DEGTORAD;
+
+    if (id == 2) {
+        // Right flipper: shift left from anchor
+        Def.position.Set(PIXELS_TO_METERS(x - width), PIXELS_TO_METERS(y));
+    }
+    else {
+        // Left flipper: shift right from anchor
+        Def.position.Set(PIXELS_TO_METERS(x + width), PIXELS_TO_METERS(y));
+    }
+
+    // Optional: start angled inward
+    Def.angle = -90 * DEGTORAD;
+
     b2Body* Paddle = world->CreateBody(&Def);
     Paddle->CreateFixture(&paddleFixture);
 
@@ -420,19 +428,22 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
     b2RevoluteJointDef JointDef;
     JointDef.bodyA = ground;
     JointDef.bodyB = Paddle;
-    JointDef.localAnchorA.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
-    JointDef.localAnchorB.Set(-PIXELS_TO_METERS(width / 2), 0);
 
-    JointDef.enableLimit = true;
-    if (id == 1) {
-        JointDef.lowerAngle = -15 * DEGTORAD;
-        JointDef.upperAngle = 30 * DEGTORAD;
+    JointDef.localAnchorA.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+
+    if (id == 2) {
+        // Right flipper: rotate counter-clockwise
+        Def.position.Set(PIXELS_TO_METERS(x - width), PIXELS_TO_METERS(y)); // body center
+        JointDef.localAnchorB.Set(PIXELS_TO_METERS(width), 0); // paddle anchor
     }
     else {
-        JointDef.lowerAngle = -30 * DEGTORAD;
-        JointDef.upperAngle = 15 * DEGTORAD;
+        // Left flipper: rotate clockwise
+        JointDef.localAnchorB.Set(-PIXELS_TO_METERS(width), 0);
+        JointDef.lowerAngle = -105 * DEGTORAD;
+        JointDef.upperAngle = -60 * DEGTORAD;
     }
 
+    JointDef.enableLimit = true;
     JointDef.enableMotor = true;
     JointDef.maxMotorTorque = 100.0f;
 
