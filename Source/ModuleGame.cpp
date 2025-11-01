@@ -11,10 +11,10 @@ class PhysicEntity
 protected:
 
 	PhysicEntity(PhysBody* _body, Module* _listener)
-		: body(_body)
+		: physBody(_body)
 		, listener(_listener)
 	{
-		body->listener = listener;
+		physBody->listener = listener;
 	}
 
 public:
@@ -27,7 +27,7 @@ public:
 	}
 
 
-	PhysBody* body;
+	PhysBody* physBody;
 	Module* listener;
 };
 
@@ -44,13 +44,13 @@ public:
 	void Update() override
 	{
 		int x, y;
-		body->GetPhysicPosition(x, y);
+		physBody->GetPhysicPosition(x, y);
 		Vector2 position{ (float)x, (float)y };
 		float scale = 1.0f;
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
 		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = body->GetRotation() * RAD2DEG;
+		float rotation = physBody->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 	}
 
@@ -67,7 +67,7 @@ public:
 		, texture(_texture)
 	{
 		int x, y;
-		body->GetPhysicPosition(x, y);
+		physBody->GetPhysicPosition(x, y);
 		Vector2 position{ (float)x, (float)y };
 		posX = position.x - texture.width / 2;
 		posY = position.y - texture.height / 2;
@@ -172,10 +172,10 @@ update_status ModuleGame::Update()
 {
 	//ball reset
 	if (IsKeyDown(KEY_ONE)) {
-		ball->body->body->SetTransform({ PIXEL_TO_METERS(ballPos.x),PIXEL_TO_METERS(ballPos.y) }, 0);
-		ball->body->body->SetLinearVelocity({0,0.1});
-		ball->body->body->SetFixedRotation(true);
-		ball->body->body->SetFixedRotation(false);
+		ball->physBody->body->SetTransform({ PIXEL_TO_METERS(ballPos.x),PIXEL_TO_METERS(ballPos.y) }, 0);
+		ball->physBody->body->SetLinearVelocity({0,0.1});
+		ball->physBody->body->SetFixedRotation(true);
+		ball->physBody->body->SetFixedRotation(false);
 	}
 	
 	for (PhysicEntity* entity : entities)

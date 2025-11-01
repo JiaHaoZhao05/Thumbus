@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModuleGame.h"
 
 #include "p2Point.h"
 #include <math.h>
@@ -524,13 +525,21 @@ void ModulePhysics::BeginContact(b2Contact* contact)
     b2BodyUserData dataA = contact->GetFixtureA()->GetBody()->GetUserData();
     b2BodyUserData dataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-    PhysBody* physA = (PhysBody*)dataA.pointer;
+    /*PhysBody* ball = App->scene_intro->ball;
     PhysBody* physB = (PhysBody*)dataB.pointer;
 
+    if (physA && physA->listener != NULL)
+        physA->listener->OnCollision(physA, physB);
+    if (physB && physB->listener != NULL)
+        physB->listener->OnCollision(physB, physA);
   
+
+    p2List_item<PhysBody*>* c = App->scene_intro->balls.getFirst();
+    while (c != NULL)
    // if (physA == App->scene_intro->ball && physB == App->scene_intro->ball)
       //  physA->listener->OnCollision(physA, physB);
 
     if (physB && physB->listener != NULL)
         physB->listener->OnCollision(physB, physA);
+        */
 }
