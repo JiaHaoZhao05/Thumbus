@@ -23,13 +23,9 @@ public:
 	void ModuleGame::CreateWorld();
 	std::vector<PhysicEntity*> entities;
 
-	PhysicEntity* ball;
-
-
 	PhysBody* deathZone;
 
 	//textures
-	Texture2D ballTex;
 	Texture2D bumperTex;
 	Texture2D bumperMiniTex;
 	Texture2D outerBackgroundTex;
@@ -48,12 +44,5 @@ public:
 	Vector2 bumper5Pos = { 150, 150 };
 	Vector2 bumper6Pos = { 250, 200 };
 	Vector2 ballPos = { 463,560 };
-
-	//score and balls
-	int currentScore = 0;
-	int previousScore = 0;
-	int highScore = 0;
-	int balls = 3;
-	int currentBalls = 0;
 	
 };

@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "p2Point.h"
 
+class PhysicEntity;
 class ModulePlayer : public Module
 {
 public:
@@ -11,9 +12,11 @@ public:
 
 	bool Start();
 	update_status Update();
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 	bool CleanUp();
 
 	void RespawnBall();
+
 public:
 
 	int currentScore = 0;
@@ -22,8 +25,8 @@ public:
 	int balls = 3;
 	int currentBalls = 0;
 
-	PhysBody* pbody = nullptr;
-	Texture2D tex;
+	PhysicEntity* ball;
+	Texture2D ballTex;
 	float ballRadius = 12.5f;
 	Vector2 startPos = {465,550};
 };

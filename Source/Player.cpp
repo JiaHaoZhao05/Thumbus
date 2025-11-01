@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "ModulePhysics.h"
 #include "ModuleRender.h"
+#include "ModuleGame.h"
+#include "PhysicEntity.h"
 #include "raylib.h"
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -16,8 +18,8 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
-	pbody = App->physics->CreateBall(startPos.x, startPos.y, ballRadius);
-	tex = LoadTexture("Assets/ball.png");
+    ballTex = LoadTexture("Assets/ball.png");
+    ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex);
     currentScore = 0;
 	return true;
 }
@@ -26,10 +28,10 @@ bool ModulePlayer::Start()
 bool ModulePlayer::CleanUp()
 {
 	LOG("Unloading player");
-    if (pbody != nullptr){
-        App->physics->world->DestroyBody(pbody->body);
-        delete pbody;
-        pbody = nullptr;
+    if (ball->physBody != nullptr){
+        App->physics->world->DestroyBody(ball->physBody->body);
+        delete ball->physBody;
+        ball->physBody = nullptr;
     }
 	return true;
 }
@@ -37,11 +39,7 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
-    if (pbody != nullptr){
-        int x, y;
-        pbody->GetPhysicPosition(x, y);
-        DrawTexture(tex,x-ballRadius, y-ballRadius, WHITE);
-    }
+    ball->Update();
 
 
     return UPDATE_CONTINUE;
@@ -49,10 +47,15 @@ update_status ModulePlayer::Update()
 
 // Ball respawn as long as there are balls left
 void ModulePlayer::RespawnBall() {
-    if (balls > 0 && pbody != nullptr) {
+    LOG("RESPAWNBALL");
+    if (balls > 0 && ball->physBody != nullptr) {
         balls--;
-        App->physics->world->DestroyBody(pbody->body);
-        delete pbody;
-        pbody = App->physics->CreateBall(startPos.x, startPos.y, ballRadius);
+        App->physics->world->DestroyBody(ball->physBody->body);
+        delete ball->physBody;
+        ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex);
     }
+}
+
+void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
+    //currentScore++;
 }

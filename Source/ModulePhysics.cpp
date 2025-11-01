@@ -4,6 +4,7 @@
 #include "ModulePhysics.h"
 #include "ModuleGame.h"
 #include "PhysicEntity.h"
+#include "player.h"
 
 #include "p2Point.h"
 #include <math.h>
@@ -32,10 +33,11 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {
     LOG("Creating Physics 2D environment");
-
+    
     // --- Create Box2D world ---
     b2Vec2 gravity(GRAVITY_X, GRAVITY_Y);
     world = new b2World(gravity);
+    world->SetContactListener(this);
 
     // --- Create static ground ---
     b2BodyDef groundDef;
@@ -213,6 +215,20 @@ update_status ModulePhysics::PreUpdate()
         }
         else {
             springPrismatic->EnableMotor(false);
+        }
+    }
+
+    //for (b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
+    for (b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
+    {
+        if (contact->GetFixtureA()->IsSensor() && contact->IsTouching())
+        {
+            b2BodyUserData dataA = contact->GetFixtureA()->GetBody()->GetUserData();
+            b2BodyUserData dataB = contact->GetFixtureA()->GetBody()->GetUserData();
+            PhysBody* physA = (PhysBody*)dataA.pointer;
+            PhysBody* physB = (PhysBody*)dataB.pointer;
+            if (physA && physB && physA->listener)
+                physA->listener->OnCollision(physA, physB);
         }
     }
     return UPDATE_CONTINUE;
@@ -601,22 +617,29 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 
 void ModulePhysics::BeginContact(b2Contact* contact)
 {
+    LOG("CONTACT");
     b2BodyUserData dataA = contact->GetFixtureA()->GetBody()->GetUserData();
     b2BodyUserData dataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-    PhysBody* physA = (PhysBody*)dataB.pointer;
+    PhysBody* physA = (PhysBody*)dataA.pointer;
     PhysBody* physB = (PhysBody*)dataB.pointer;
 
-    PhysBody* ball = App->scene_intro->ball->physBody;
+    if (physA && physA->listener != NULL)
+        physA->listener->OnCollision(physA, physB);
+    if (physB && physB->listener != NULL)
+        physB->listener->OnCollision(physB, physA);
 
+
+    PhysBody* ball = App->player->ball->physBody;
     for (auto& pEntity : App->scene_intro->entities) {
-
+        LOG("Entity type: %d",pEntity->type);
         if (physA == pEntity->physBody && physB == ball) {
+            
             if (pEntity->type == 1) { //check bumpers
-                App->scene_intro->currentScore += 75;
+                App->player->currentScore += 75;
             }
             if (pEntity->type == 2) { //check triangles
-                App->scene_intro->currentScore += 50;
+                App->player->currentScore += 50;
             }
             if (pEntity->type == 3) { //check background
 

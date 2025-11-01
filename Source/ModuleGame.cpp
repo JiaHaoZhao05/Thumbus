@@ -25,7 +25,6 @@ bool ModuleGame::Start()
 
 	paddleRightTex = LoadTexture("Assets/ThumbRight.png");
 	paddleLeftTex = LoadTexture("Assets/ThumbLeft.png");
-	ballTex = LoadTexture("Assets/ball.png");
 	bumperTex = LoadTexture("Assets/bumper.png");
 	bumperMiniTex = LoadTexture("Assets/bumperMini.png");
 	outerBackgroundTex = LoadTexture("Assets/Map/outerBackground.png");
@@ -62,6 +61,7 @@ update_status ModuleGame::Update()
 		ball->physBody->body->SetFixedRotation(true);
 		ball->physBody->body->SetFixedRotation(false);
 		*/
+
 	if (IsKeyPressed(KEY_ONE))
 	{
 		App->player->RespawnBall(); //As long as there are balls left pressing 1 will respawn the ball
@@ -72,7 +72,7 @@ update_status ModuleGame::Update()
 	{
 		entity->Update();
 	}
-	ball->Update();
+	//ball->Update();
 
 	return UPDATE_CONTINUE;
 }
@@ -193,6 +193,6 @@ void ModuleGame::CreateWorld() {
 	//entities.emplace_back(deathZone, deathZone->listener);
 
 	//ball
-	ball = new Ball(App->physics, ballPos.x, ballPos.y, this, ballTex);
+	//ball = new Ball(App->physics, ballPos.x, ballPos.y, this, ballTex);
 }
 
