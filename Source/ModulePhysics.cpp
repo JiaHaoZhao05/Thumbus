@@ -136,7 +136,7 @@ bool ModulePhysics::Start()
     prismaticDef.upperTranslation = PIXELS_TO_METERS(80); // 80 px hacia abajo m�ximo
     springPrismatic = (b2PrismaticJoint*)world->CreateJoint(&prismaticDef);
     springPrismatic->SetLimits(prismaticDef.lowerTranslation, prismaticDef.upperTranslation);
-
+    
 
     return true;
 }
