@@ -40,7 +40,7 @@ bool ModuleGame::Start()
 	triangle2TexAux = LoadTexture("Assets/Map/triangle22.png");
 	triangle3TexAux = LoadTexture("Assets/Map/triangle32.png");
 	triangle4TexAux = LoadTexture("Assets/Map/triangle42.png");
-	springTex = LoadTexture("Assets/Map/Untitled_Artwork(8).png");
+	springTex = LoadTexture("Assets/Map/spring.png");
 
 	//load sounds
 	bumperFX = App->audio->LoadFx("Assets/sound.wav");
