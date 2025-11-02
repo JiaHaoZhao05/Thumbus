@@ -16,6 +16,7 @@ public:
 	bool CleanUp();
 
 	void RespawnBall();
+	void ModedBallFriction(float friction);
 
 public:
 
@@ -28,5 +29,6 @@ public:
 	PhysicEntity* ball;
 	Texture2D ballTex;
 	float ballRadius = 12.5f;
+	float friction = 0;
 	Vector2 startPos = {465,550};
 };

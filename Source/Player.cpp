@@ -19,7 +19,7 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
     ballTex = LoadTexture("Assets/ball.png");
-    ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex);
+    ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex, friction);
     currentScore = 0;
 	return true;
 }
@@ -52,7 +52,18 @@ void ModulePlayer::RespawnBall() {
         balls--;
         App->physics->world->DestroyBody(ball->physBody->body);
         delete ball->physBody;
-        ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex);
+        ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex, friction);
+    }
+}
+
+//reapear a ball at same position with different friction
+void::ModulePlayer::ModedBallFriction(float friction) {
+    if (ball->physBody != nullptr) {
+        int x, y;
+        ball->physBody->GetPhysicPosition(x, y);
+        App->physics->world->DestroyBody(ball->physBody->body);
+        delete ball->physBody;
+        ball = new Ball(App->physics, x, y, this, ballTex, friction);
     }
 }
 

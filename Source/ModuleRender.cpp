@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
+#include "ModulePhysics.h"
 #include "Player.h"
 #include <math.h>
 
@@ -49,9 +50,15 @@ update_status ModuleRender::PostUpdate()
     DrawFPS(10, 10);
     DrawText(TextFormat("Balls: %i", App->player->balls), 10, 30, 20, WHITE);
     if (App->player->currentScore > App->player->highScore) { App->player->highScore = App->player->currentScore; }
-    DrawText(TextFormat("Current Score: %i", App->player->currentScore), 10, 70, 20, WHITE);
     DrawText(TextFormat("Highscore: %i", App->player->highScore), 10, 50, 20, WHITE);
+    DrawText(TextFormat("Current Score: %i", App->player->currentScore), 10, 70, 20, WHITE);
     DrawText(TextFormat("Previous Score: %i", App->player->previousScore), 10, 90, 20, WHITE);
+    if (App->physics->debug) {
+        DrawText("-Debug:", 10, 110, 20, WHITE);
+        DrawText(TextFormat("%i Gravity: %f", (selector == 0),App->physics->world->GetGravity().y), 10, 130, 20, WHITE);
+        DrawText(TextFormat("%i Ball friction: %f", (selector == 1),App->player->friction), 10, 150, 20, WHITE);
+        DrawText(TextFormat("%i TargetFPS: %i", (selector == 2), GetFPS()), 10, 170, 20, WHITE);
+    }
     EndDrawing();
 
 	return UPDATE_CONTINUE;

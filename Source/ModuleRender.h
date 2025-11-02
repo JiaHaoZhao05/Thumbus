@@ -21,7 +21,7 @@ public:
     bool RenderDrawText(const char* text, int x, int y, Font font, int spacing, Color tint) const;
 
 public:
-
+	int selector = 0;
 	Color background;
     Rectangle camera;
 };
