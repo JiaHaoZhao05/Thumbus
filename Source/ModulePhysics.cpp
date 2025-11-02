@@ -45,68 +45,6 @@ bool ModulePhysics::Start()
     groundDef.position.Set(0, 0);
     ground = world->CreateBody(&groundDef);
 
-    //// --- Paddle fixture ---
-    //b2PolygonShape paddleShape;
-    //paddleShape.SetAsBox(PIXELS_TO_METERS(50), PIXELS_TO_METERS(10)); // 100x20 pixels
-
-    //b2FixtureDef paddleFixture;
-    //paddleFixture.shape = &paddleShape;
-    //paddleFixture.density = 5.0f;
-    //paddleFixture.friction = 0.3f;
-
-    //// --- LEFT PADDLE ---
-    //b2BodyDef leftDef;
-    //leftDef.type = b2_dynamicBody;
-    //// Center of paddle is half-width to the right of pivot
-    //leftDef.position.Set(PIXELS_TO_METERS(140 + 50), PIXELS_TO_METERS(600));
-    //leftPaddle = world->CreateBody(&leftDef);
-    //leftPaddle->CreateFixture(&paddleFixture);
-
-    //b2RevoluteJointDef leftJointDef;
-    //leftJointDef.bodyA = ground;
-    //leftJointDef.bodyB = leftPaddle;
-
-    //// Pivot at left side of paddle (base)
-    //leftJointDef.localAnchorA.Set(PIXELS_TO_METERS(140), PIXELS_TO_METERS(600));
-    //leftJointDef.localAnchorB.Set(-PIXELS_TO_METERS(50), 0); // relative to paddle center
-
-    //leftJointDef.enableLimit = true;
-    //leftJointDef.lowerAngle = -15 * DEGTORAD; // resting downward
-    //leftJointDef.upperAngle = 30 * DEGTORAD;  // max upward flip
-
-    //leftJointDef.enableMotor = true;
-    //leftJointDef.maxMotorTorque = 100.0f;
-
-    //leftJoint = (b2RevoluteJoint*)world->CreateJoint(&leftJointDef);
-
-
-    // --- RIGHT PADDLE ---
-    //b2BodyDef rightDef;
-    //rightDef.type = b2_dynamicBody;
-    //rightDef.position.Set(PIXELS_TO_METERS(360 - 50), PIXELS_TO_METERS(600)); // center half-width left
-    //rightPaddle = world->CreateBody(&rightDef);
-    //rightPaddle->CreateFixture(&paddleFixture);
-
-    //b2RevoluteJointDef rightJointDef;
-    //rightJointDef.bodyA = ground;
-    //rightJointDef.bodyB = rightPaddle;
-
-    //// Pivot at right side of paddle (base)
-    //rightJointDef.localAnchorA.Set(PIXELS_TO_METERS(360), PIXELS_TO_METERS(600));
-    //rightJointDef.localAnchorB.Set(PIXELS_TO_METERS(50), 0);
-
-    //rightJointDef.enableLimit = true;
-    //rightJointDef.lowerAngle = -30 * DEGTORAD; // upward flip
-    //rightJointDef.upperAngle = 15 * DEGTORAD;  // resting downward
-
-    //rightJointDef.enableMotor = true;
-    //rightJointDef.maxMotorTorque = 100.0f;
-
-    //rightJoint = (b2RevoluteJoint*)world->CreateJoint(&rightJointDef);
-
-    //leftJoint->EnableMotor(false);
-    //rightJoint->EnableMotor(false);
-
     // --- PLUNGER / SPRING BODY (rect�ngulo vertical que se desliza) ---
     b2BodyDef springDef;
     springDef.type = b2_dynamicBody;
@@ -145,40 +83,6 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
     world->Step(1.0f / 60.0f, 6, 2);
-
-    //// LEFT PADDLE
-    //if (IsKeyDown(KEY_LEFT))
-    //{
-    //    leftJoint->EnableMotor(false);
-    //    if (IsKeyPressed(KEY_LEFT))
-    //        leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
-    //}
-    //else
-    //{
-    //    float leftAngle = leftPaddle->GetAngle();
-    //    float leftTarget = -30 * DEGTORAD;
-    //    float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
-    //    leftJoint->EnableMotor(true);
-    //    leftJoint->SetMotorSpeed(leftSpeed);
-    //    leftJoint->SetMaxMotorTorque(50.0f);
-    //}
-
-    //// RIGHT PADDLE
-    //if (IsKeyDown(KEY_RIGHT))
-    //{
-    //    rightJoint->EnableMotor(false);
-    //    if (IsKeyPressed(KEY_RIGHT))
-    //        rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
-    //}
-    //else
-    //{
-    //    float rightAngle = rightPaddle->GetAngle();
-    //    float rightTarget = 30 * DEGTORAD;
-    //    float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
-    //    rightJoint->EnableMotor(true);
-    //    rightJoint->SetMotorSpeed(rightSpeed);
-    //    rightJoint->SetMaxMotorTorque(50.0f);
-    //}
 
     //SPRING CONTROL -> KEYDOWN
     float currentTranslation = springPrismatic->GetJointTranslation();
@@ -245,14 +149,6 @@ update_status ModulePhysics::PostUpdate()
 
     if (!debug)
         return UPDATE_CONTINUE;
-
-    //// --- Draw paddles ---
-    //b2Vec2 lPos = leftPaddle->GetPosition();
-    //float lAngle = leftPaddle->GetAngle() * RADTODEG;
-
-    //b2Vec2 rPos = rightPaddle->GetPosition();
-    //float rAngle = rightPaddle->GetAngle() * RADTODEG;
-
 
     // Bonus code: this will iterate all objects in the world and draw the circles
     // You need to provide your own macro to translate meters to pixels
