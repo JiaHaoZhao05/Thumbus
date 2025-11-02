@@ -120,10 +120,10 @@ static constexpr int outerBackground[92] = {
 	379, 789,
 	390, 785,
 	394, 699,
-	387, 685,
-	374, 683,
-	354, 670,
-	378, 653,
+	385, 681,
+	362, 680,
+	355, 667,
+	378, 650,
 	400, 632,
 	415, 610,
 	445, 570,
@@ -227,7 +227,7 @@ void ModuleGame::CreateWorld() {
 
 	//flippers
 	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 677, this, paddleLeftTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 677, this, paddleRightTex, 2));
+	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 679, this, paddleRightTex, 2));
 
 	//spring
 	//entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, paddleLeftTex));
