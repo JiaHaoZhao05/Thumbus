@@ -18,6 +18,7 @@ ModuleGame::~ModuleGame()
 // Load assets
 bool ModuleGame::Start()
 {
+	SetTargetFPS(60);
 	LOG("Loading Intro assets");
 	bool ret = true;
 
