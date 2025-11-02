@@ -357,11 +357,59 @@ update_status ModulePhysics::PostUpdate()
         mouse_joint = nullptr;
         body_clicked = nullptr;
     }
+    //Debug change parameters WS to select AD to mod
+    if (IsKeyPressed(KEY_W)) {
+        App->renderer->selector--;
+        if (App->renderer->selector <= -1) {
+            App->renderer->selector = 2;
+        }
+
+    }
+    else if (IsKeyPressed(KEY_S)) {
+        App->renderer->selector++;
+        if (App->renderer->selector >= 3) {
+            App->renderer->selector = 0;
+        }
+    }
+    if (IsKeyPressed(KEY_A)) { 
+        if (App->renderer->selector == 0) { //reduce gravity
+            b2Vec2 temp = App->physics->world->GetGravity();
+            temp.y -= 0.5f;
+            App->physics->world->SetGravity(temp);
+        }
+        if (App->renderer->selector == 1) { //reduce friction
+            App->player->friction -= 0.5f;
+            if (App->player->friction < 0) App->player->friction = 0;
+            App->player->ModedBallFriction(App->player->friction);
+        }
+        if (App->renderer->selector == 2) { //reduce fps
+            int temp = GetFPS();
+            temp -= 5;
+            if (temp < 5) temp = 5;
+            SetTargetFPS(temp);
+        }
+    }
+    else if (IsKeyPressed(KEY_D)) {
+        if (App->renderer->selector == 0) { //increase gravity
+            b2Vec2 temp = App->physics->world->GetGravity();
+            temp.y += 0.5f;
+            App->physics->world->SetGravity(temp);
+        }
+        if (App->renderer->selector == 1) { //increase friction
+            App->player->friction += 0.5f;
+            App->player->ModedBallFriction(App->player->friction);
+        }
+        if (App->renderer->selector == 2) { //increase fps
+            int temp = GetFPS();
+            temp += 5;
+            SetTargetFPS(temp);
+        }
+    }
 
     return UPDATE_CONTINUE;
 }
 
-PhysBody* ModulePhysics::CreateBall(int x, int y, int radius)
+PhysBody* ModulePhysics::CreateBall(int x, int y, int radius, float friction)
 {
     PhysBody* pbody = new PhysBody();
 
@@ -377,6 +425,7 @@ PhysBody* ModulePhysics::CreateBall(int x, int y, int radius)
     b2FixtureDef fixture;
     fixture.shape = &shape;
     fixture.density = 0.1f;
+    fixture.friction = friction;
 
     b->CreateFixture(&fixture);
 

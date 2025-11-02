@@ -38,8 +38,8 @@ public:
 class Ball : public PhysicEntity
 {
 public:
-	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateBall(_x, _y, 12.5), _listener)
+	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, float friction)
+		: PhysicEntity(physics->CreateBall(_x, _y, 12.5, friction), _listener)
 		, texture(_texture)
 	{
 		type = 0;

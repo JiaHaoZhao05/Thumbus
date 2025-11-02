@@ -48,7 +48,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateBall(int x, int y, int radius);
+	PhysBody* CreateBall(int x, int y, int radius, float friction);
 	PhysBody* CreateFlipper(int height, int width, float density, float friction, int x, int y, int id);
 	PhysBody* CreateSpring(int height, int width, float density, float friction, int x, int y);
 	PhysBody* CreateBumper(int x, int y, int radius);
@@ -64,10 +64,8 @@ public:
 	b2RevoluteJoint* rightJoint = nullptr;
 
 	b2World* world = nullptr; //public for player elimination
+	bool debug; //public to show some data while debugging
 private:
-
-	bool debug;
-
 
 	// Plunger / spring
 	b2Body* springBody = nullptr;
