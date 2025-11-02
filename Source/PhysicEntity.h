@@ -190,7 +190,7 @@ public:
 			{
 				leftJoint->EnableMotor(false);
 				if (IsKeyPressed(KEY_LEFT))
-					leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
+					leftPaddle->ApplyAngularImpulse(-60.0f, true); // flip upward
 			}
 			else
 			{
@@ -208,7 +208,7 @@ public:
 			{
 				rightJoint->EnableMotor(false);
 				if (IsKeyPressed(KEY_RIGHT))
-					rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
+					rightPaddle->ApplyAngularImpulse(60.0f, true); // flip upward
 			}
 			else
 			{

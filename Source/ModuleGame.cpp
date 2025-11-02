@@ -7,79 +7,6 @@
 #include "PhysicEntity.h"
 #include "Player.h"
 
-class Spring : public PhysicEntity
-{
-public:
-	Spring(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateSpring(height, width, density, friction, x, y), _listener)
-		, texture(_texture)
-	{
-		springBody = static_cast<PhysBody*>(body);
-		springPrismatic = springBody->prismaticJoint;
-	}
-
-	void Update() {
-		//Draw
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		Vector2 position{ (float)x, (float)y };
-		float scale = 1.0f;
-		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
-		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = (body->GetRotation() * RAD2DEG) + 85;
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-
-		Move();
-	}
-
-	void Move() {
-		float currentTranslation = springPrismatic->GetJointTranslation();
-		static bool wasKeyDown = false;
-
-		if (IsKeyDown(KEY_DOWN)) {
-			wasKeyDown = true;
-
-			springPrismatic->EnableMotor(true);
-
-			if (currentTranslation < springPrismatic->GetUpperLimit()) {
-				springPrismatic->SetMotorSpeed(5.0f);     // positive = move down on screen
-				springPrismatic->SetMaxMotorForce(10.0f);
-			}
-			else {
-				springPrismatic->SetMotorSpeed(0.0f);
-			}
-		}
-		else if (wasKeyDown && IsKeyUp(KEY_DOWN)) {
-			wasKeyDown = false;
-
-			float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit()); //Erik you need the difference that was just its current position
-			float k = 15.0f; // constante elastica del resorte (ajustable)
-			float force = -k * compression; //raylib negative == up
-
-			springPrismatic->EnableMotor(false);
-
-			// aplicar impulso hacia arriba
-			springBody->body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
-		}
-		else { //si no estas haciendo nada, gravedad mueve el muelle, esto hace que vuelva a su posicion inicial, no lo quites Erik
-			if (currentTranslation > PIXELS_TO_METERS(0.5f)) {
-				springPrismatic->EnableMotor(true);
-				springPrismatic->SetMotorSpeed(-10.0f);  // negative = move up on screen
-				springPrismatic->SetMaxMotorForce(150.0f);
-			}
-			else {
-				springPrismatic->EnableMotor(false);
-			}
-		}
-	}
-
-private:
-	Texture2D texture;
-	PhysBody* springBody;
-	b2PrismaticJoint* springPrismatic;
-};
-
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	
@@ -308,7 +235,7 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 663, this, paddleRightTex, 2));
 
 	//spring
-	entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, paddleLeftTex));
+	//entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, paddleLeftTex));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
