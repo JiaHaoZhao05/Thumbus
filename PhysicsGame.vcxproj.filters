@@ -66,6 +66,9 @@
     <ClInclude Include="Source\Player.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Source\PhysicEntity.h">
+      <Filter>Headers\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

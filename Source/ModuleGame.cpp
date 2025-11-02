@@ -4,219 +4,8 @@
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
-
-#define PIXELS_PER_METER 50.0f
-#define METER_PER_PIXEL (1.0f / PIXELS_PER_METER)
-#define METERS_TO_PIXELS(m) ((float)((m) * PIXELS_PER_METER))
-#define PIXELS_TO_METERS(p) ((float)(p) / PIXELS_PER_METER)
-
-
-#define DEGTORAD 0.0174532925199432957f
-#define RADTODEG 57.295779513082320876f
-
-class PhysicEntity
-{
-protected:
-
-	PhysicEntity(PhysBody* _body, Module* _listener)
-		: body(_body)
-		, listener(_listener)
-	{
-		body->listener = listener;
-	}
-
-public:
-	virtual ~PhysicEntity() = default;
-	virtual void Update() = 0;
-
-	virtual int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal)
-	{
-		return 0;
-	}
-
-protected:
-	PhysBody* body;
-	Module* listener;
-};
-
-class Ball : public PhysicEntity
-{
-public:
-	Ball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateBall(_x, _y, 12.5), _listener)
-		, texture(_texture)
-	{
-
-	}
-
-	void Update() override
-	{
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		Vector2 position{ (float)x, (float)y };
-		float scale = 1.0f;
-		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
-		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = body->GetRotation() * RAD2DEG;
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-	}
-
-
-private:
-	Texture2D texture;
-
-};
-
-class Bumper : public PhysicEntity
-{
-public:
-	Bumper(ModulePhysics* physics, int _x, int _y, int _rad, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateBumper(_x, _y, _rad), _listener)
-		, texture(_texture)
-	{
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		Vector2 position{ (float)x, (float)y };
-		posX = position.x - texture.width / 2;
-		posY = position.y - texture.height / 2;
-	}
-
-	float posX;
-	float posY;
-
-
-	void Update() override
-	{
-		
-		DrawTexture(texture, posX, posY, WHITE);
-	}
-private:
-	Texture2D texture;
-
-};
-
-class Background : public PhysicEntity
-{
-public:
-	Background(ModulePhysics* physics, int _x, int _y, const int* points, int size, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, points, size), _listener)
-		, texture(_texture)
-	{
-
-	}
-
-	void Update() override
-	{
-		DrawTexture(texture,0, 0, WHITE);
-	}
-private:
-	Texture2D texture;
-
-};
-
-class Triangle : public PhysicEntity
-{
-public:
-	Triangle(ModulePhysics* physics, int _x, int _y, const int* points, int size, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChainTriangle(_x, _y, points, size), _listener)
-		, texture(_texture)
-	{
-
-	}
-
-	void Update() override
-	{
-		DrawTexture(texture, 0, 0, WHITE);
-	}
-private:
-	Texture2D texture;
-
-};
-
-class Flipper : public PhysicEntity
-{
-public:
-	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture, int id)
-		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y, id), _listener)
-		, texture(_texture) 
-	{
-		PhysBody* pbody = static_cast<PhysBody*>(body);
-		_id = id;
-		if (_id == 1) {
-			leftPaddle = pbody->body;
-			leftJoint = pbody->joint;
-
-		}
-		else if (_id == 2) {
-			rightPaddle = pbody->body;
-			rightJoint = pbody->joint;
-		}
-
-	}
-
-	void Update() {
-		//Draw
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		Vector2 position{ (float)x, (float)y };
-		float scale = 1.0f;
-		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
-		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
-		float rotation = body->GetRotation() * RAD2DEG;
-		if (_id == 1) rotation -= 13;
-		if (_id == 2) rotation += 13;
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-
-		Move();
-	}
-
-	void Move() {
-		if (_id == 1) {
-			if (IsKeyDown(KEY_LEFT))
-			{
-				leftJoint->EnableMotor(false);
-				if (IsKeyPressed(KEY_LEFT))
-					leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
-			}
-			else
-			{
-				float leftAngle = leftPaddle->GetAngle();
-				float leftTarget = -30 * DEGTORAD;
-				float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
-				leftJoint->EnableMotor(true);
-				leftJoint->SetMotorSpeed(leftSpeed);
-				leftJoint->SetMaxMotorTorque(50.0f);
-			}
-		}
-
-		if (_id == 2) {
-			if (IsKeyDown(KEY_RIGHT))
-			{
-				rightJoint->EnableMotor(false);
-				if (IsKeyPressed(KEY_RIGHT))
-					rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
-			}
-			else
-			{
-				float rightAngle = rightPaddle->GetAngle();
-				float rightTarget = 30 * DEGTORAD;
-				float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
-				rightJoint->EnableMotor(true);
-				rightJoint->SetMotorSpeed(rightSpeed);
-				rightJoint->SetMaxMotorTorque(50.0f);
-			}
-		}
-	}
-private:
-	Texture2D texture;
-	int _id;
-	b2Body* leftPaddle = nullptr;
-	b2Body* rightPaddle = nullptr;
-	b2RevoluteJoint* leftJoint = nullptr;
-	b2RevoluteJoint* rightJoint = nullptr;
-};
+#include "PhysicEntity.h"
+#include "Player.h"
 
 class Spring : public PhysicEntity
 {
@@ -302,21 +91,32 @@ ModuleGame::~ModuleGame()
 // Load assets
 bool ModuleGame::Start()
 {
+	SetTargetFPS(60);
 	LOG("Loading Intro assets");
 	bool ret = true;
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	//load textures
 	paddleRightTex = LoadTexture("Assets/ThumbRight.png");
 	paddleLeftTex = LoadTexture("Assets/ThumbLeft.png");
-	ballTex = LoadTexture("Assets/ball.png");
-	bumperTex = LoadTexture("Assets/bumper.png");
-	bumperMiniTex = LoadTexture("Assets/bumperMini.png");
+	bumperTex = LoadTexture("Assets/bumper2.png");
+	bumperMiniTex = LoadTexture("Assets/bumperMini2.png");
+	bumperTexAux = LoadTexture("Assets/bumper.png");
+	bumperMiniTexAux = LoadTexture("Assets/bumperMini.png");
 	outerBackgroundTex = LoadTexture("Assets/Map/outerBackground.png");
 	triangle1Tex = LoadTexture("Assets/Map/triangle1.png");
 	triangle2Tex = LoadTexture("Assets/Map/triangle2.png");
 	triangle3Tex = LoadTexture("Assets/Map/triangle3.png");
 	triangle4Tex = LoadTexture("Assets/Map/triangle4.png");
+	triangle1TexAux = LoadTexture("Assets/Map/triangle12.png");
+	triangle2TexAux = LoadTexture("Assets/Map/triangle22.png");
+	triangle3TexAux = LoadTexture("Assets/Map/triangle32.png");
+	triangle4TexAux = LoadTexture("Assets/Map/triangle42.png");
+
+	//load sounds
+	bumperFX = App->audio->LoadFx("Assets/sound.wav");
+	bumperFX2 = App->audio->LoadFx("Assets/sound.wav");
 
 	//rick = LoadTexture("Assets/rick_head.png");
 
@@ -338,16 +138,28 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-		if (IsKeyPressed(KEY_ONE))
+	/*
+	//ball reset
+	if (IsKeyDown(KEY_ONE)) {
+		ball->physBody->body->SetTransform({ PIXEL_TO_METERS(ballPos.x),PIXEL_TO_METERS(ballPos.y) }, 0);
+		ball->physBody->body->SetLinearVelocity({0,0.1});
+		ball->physBody->body->SetFixedRotation(true);
+		ball->physBody->body->SetFixedRotation(false);
+		*/
+
+
+
+	if (IsKeyPressed(KEY_ONE))
 	{
-		entities.emplace_back(new Ball(App->physics, GetMouseX(), GetMouseY(), this, ballTex));
+		App->player->RespawnBall(); //As long as there are balls left pressing 1 will respawn the ball
 
 	}
-	 
+	
 	for (PhysicEntity* entity : entities)
 	{
 		entity->Update();
 	}
+	//ball->Update();
 
 	return UPDATE_CONTINUE;
 }
@@ -406,31 +218,31 @@ static constexpr int outerBackground[102] = {
 	286, 6
 };
 
-static constexpr int triangle1[10] = {
+static constexpr int triangle1[10] = { //bottom right triangle
 	396, 394,
 	409, 395,
-	445, 465,
-	367, 551,
-	354, 543
+	435, 465,
+	367, 545,
+	355, 544
 };
 
-static constexpr int triangle2[10] = {
+static constexpr int triangle2[10] = { //bottom left triangle
 	94, 400,
 	109, 399,
 	148, 544,
-	138, 554,
+	138, 545,
 	54, 468
 };
 
-static constexpr int triangle3[10] = {
-	454, 313,
+static constexpr int triangle3[10] = { //top right triangle
+	445, 313,
 	429, 357,
 	420, 355,
 	395, 265,
 	403, 260
 };
 
-static constexpr int triangle4[10] = {
+static constexpr int triangle4[10] = { //top left triangle
 	75, 288,
 	67, 290,
 	40, 246,
@@ -471,24 +283,25 @@ static constexpr int thumbusLeft[28] = {
 	229, 684
 };
 
+
 void ModuleGame::CreateWorld() {
 
 	//background
-	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 102, this, outerBackgroundTex));
+	entities.emplace_back(new Background(App->physics, 0, 0, outerBackground, 102, this, outerBackgroundTex));
 
 	//bumpers
-	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 21, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper2Pos.x, bumper2Pos.y, 21, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper3Pos.x, bumper3Pos.y, 21, this, bumperTex));
-	entities.emplace_back(new Bumper(App->physics, bumper4Pos.x, bumper4Pos.y, 11, this, bumperMiniTex));
-	entities.emplace_back(new Bumper(App->physics, bumper5Pos.x, bumper5Pos.y, 11, this, bumperMiniTex));
-	entities.emplace_back(new Bumper(App->physics, bumper6Pos.x, bumper6Pos.y, 11, this, bumperMiniTex));
+	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 30, this, bumperTex, bumperTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper2Pos.x, bumper2Pos.y, 30, this, bumperTex, bumperTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper3Pos.x, bumper3Pos.y, 30, this, bumperTex, bumperTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper4Pos.x, bumper4Pos.y, 11, this, bumperMiniTex, bumperMiniTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper5Pos.x, bumper5Pos.y, 11, this, bumperMiniTex, bumperMiniTexAux));
+	entities.emplace_back(new Bumper(App->physics, bumper6Pos.x, bumper6Pos.y, 11, this, bumperMiniTex, bumperMiniTexAux));
 
 	//triangles
-	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle1, 10, this, triangle1Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex));
-	entities.emplace_back(new Triangle(App->physics, -5, 0, triangle3, 10, this, triangle3Tex));
-	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle1, 10, this, triangle1Tex, triangle1TexAux));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle2, 10, this, triangle2Tex, triangle2TexAux));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex, triangle3TexAux));
+	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex, triangle4TexAux));
 
 	//flippers
 	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 663, this, paddleLeftTex, 1));
@@ -501,6 +314,5 @@ void ModuleGame::CreateWorld() {
 	deathZone = App->physics->CreateDeathZone();
 	//entities.emplace_back(deathZone, deathZone->listener);
 }
-
 //Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
 // the flippers move

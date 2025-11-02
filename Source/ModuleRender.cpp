@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
+#include "Player.h"
 #include <math.h>
 
 ModuleRender::ModuleRender(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -46,7 +47,11 @@ update_status ModuleRender::PostUpdate()
 {
     // Draw everything in our batch!
     DrawFPS(10, 10);
-
+    DrawText(TextFormat("Balls: %i", App->player->balls), 10, 30, 20, WHITE);
+    if (App->player->currentScore > App->player->highScore) { App->player->highScore = App->player->currentScore; }
+    DrawText(TextFormat("Current Score: %i", App->player->currentScore), 10, 70, 20, WHITE);
+    DrawText(TextFormat("Highscore: %i", App->player->highScore), 10, 50, 20, WHITE);
+    DrawText(TextFormat("Previous Score: %i", App->player->previousScore), 10, 90, 20, WHITE);
     EndDrawing();
 
 	return UPDATE_CONTINUE;
@@ -85,7 +90,7 @@ bool ModuleRender::Draw(Texture2D texture, int x, int y, const Rectangle* sectio
 	return ret;
 }
 
-bool ModuleRender::DrawText(const char * text, int x, int y, Font font, int spacing, Color tint) const
+bool ModuleRender::RenderDrawText(const char * text, int x, int y, Font font, int spacing, Color tint) const
 {
     bool ret = true;
 

@@ -2,6 +2,10 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModuleAudio.h"
+#include "ModuleGame.h"
+#include "PhysicEntity.h"
+#include "player.h"
 
 #include "p2Point.h"
 #include <math.h>
@@ -30,10 +34,11 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {
     LOG("Creating Physics 2D environment");
-
+    
     // --- Create Box2D world ---
     b2Vec2 gravity(GRAVITY_X, GRAVITY_Y);
     world = new b2World(gravity);
+    world->SetContactListener(this);
 
     // --- Create static ground ---
     b2BodyDef groundDef;
@@ -102,7 +107,7 @@ bool ModulePhysics::Start()
     //leftJoint->EnableMotor(false);
     //rightJoint->EnableMotor(false);
 
-    // --- PLUNGER / SPRING BODY (rectángulo vertical que se desliza) ---
+    // --- PLUNGER / SPRING BODY (rectï¿½ngulo vertical que se desliza) ---
     b2BodyDef springDef;
     springDef.type = b2_dynamicBody;
     springDef.position.Set(PIXELS_TO_METERS(463), PIXELS_TO_METERS(650));
@@ -110,7 +115,7 @@ bool ModulePhysics::Start()
     springBody = world->CreateBody(&springDef);
 
     b2PolygonShape springShape;
-    springShape.SetAsBox(PIXELS_TO_METERS(10), PIXELS_TO_METERS(60)); // 20x120 píxeles
+    springShape.SetAsBox(PIXELS_TO_METERS(10), PIXELS_TO_METERS(60)); // 20x120 pï¿½xeles
 
     b2FixtureDef springFixture;
     springFixture.shape = &springShape;
@@ -118,7 +123,7 @@ bool ModulePhysics::Start()
     springFixture.friction = 0.2f;
     springBody->CreateFixture(&springFixture);
 
-    // --- Cuerpo estático de anclaje superior ---
+    // --- Cuerpo estï¿½tico de anclaje superior ---
     b2BodyDef anchorDef;
     anchorDef.position.Set(PIXELS_TO_METERS(463), PIXELS_TO_METERS(590)); // punto fijo arriba
     b2Body* anchor = world->CreateBody(&anchorDef); 
@@ -128,7 +133,7 @@ bool ModulePhysics::Start()
     prismaticDef.Initialize(anchor, springBody, anchor->GetPosition(), b2Vec2(0.0f, 1.0f));
     prismaticDef.enableLimit = true;
     prismaticDef.lowerTranslation = 0.0f; // punto de reposo
-    prismaticDef.upperTranslation = PIXELS_TO_METERS(80); // 80 px hacia abajo máximo
+    prismaticDef.upperTranslation = PIXELS_TO_METERS(80); // 80 px hacia abajo mï¿½ximo
     springPrismatic = (b2PrismaticJoint*)world->CreateJoint(&prismaticDef);
     springPrismatic->SetLimits(prismaticDef.lowerTranslation, prismaticDef.upperTranslation);
 
@@ -212,6 +217,20 @@ update_status ModulePhysics::PreUpdate()
         }
         else {
             springPrismatic->EnableMotor(false);
+        }
+    }
+
+    //for (b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
+    for (b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
+    {
+        if (contact->GetFixtureA()->IsSensor() && contact->IsTouching())
+        {
+            b2BodyUserData dataA = contact->GetFixtureA()->GetBody()->GetUserData();
+            b2BodyUserData dataB = contact->GetFixtureA()->GetBody()->GetUserData();
+            PhysBody* physA = (PhysBody*)dataA.pointer;
+            PhysBody* physB = (PhysBody*)dataB.pointer;
+            if (physA && physB && physA->listener)
+                physA->listener->OnCollision(physA, physB);
         }
     }
     return UPDATE_CONTINUE;
@@ -327,6 +346,7 @@ update_status ModulePhysics::PostUpdate()
         def.maxForce = 100.0f * body_clicked->GetMass();
         mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
     }
+
     //DESTROY joint
     if (mouse_joint != nullptr && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         mouse_joint->SetTarget(mouse_position);
@@ -500,7 +520,7 @@ PhysBody* ModulePhysics::CreateSpring(int height, int width, float density, floa
 PhysBody* ModulePhysics::CreateDeathZone()
 {
     int x = 250;
-    int y = 650;
+    int y = 675;
     int width = 500;
     int height = 300;
     PhysBody* pbody = new PhysBody();
@@ -708,16 +728,53 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 
 void ModulePhysics::BeginContact(b2Contact* contact)
 {
+    LOG("CONTACT");
     b2BodyUserData dataA = contact->GetFixtureA()->GetBody()->GetUserData();
     b2BodyUserData dataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
     PhysBody* physA = (PhysBody*)dataA.pointer;
     PhysBody* physB = (PhysBody*)dataB.pointer;
 
+    if (physA && physA->listener != NULL)
+        physA->listener->OnCollision(physA, physB);
+    if (physB && physB->listener != NULL)
+        physB->listener->OnCollision(physB, physA);
+
+
+    PhysBody* ball = App->player->ball->physBody;
+    for (auto& pEntity : App->scene_intro->entities) {
+        if (physA == pEntity->physBody && physB == ball) {
+            
+            if (pEntity->type == 1) { //check bumpers
+                App->player->currentScore += 75;
+                pEntity->isSwitched = true;
+                App->audio->PlayFx(App->scene_intro->bumperFX);
+            }
+            if (pEntity->type == 2) { //check triangles
+                App->player->currentScore += 50;
+                pEntity->isSwitched = true;
+                App->audio->PlayFx(App->scene_intro->bumperFX);
+            }
+            if (pEntity->type == 3) { //check background
+
+            }
+        }
+    }
+    /*
+    PhysBody* physB = (PhysBody*)dataB.pointer;
+
+    if (physA && physA->listener != NULL)
+        physA->listener->OnCollision(physA, physB);
+    if (physB && physB->listener != NULL)
+        physB->listener->OnCollision(physB, physA);
   
-  //  if (physA == App->scene_intro->deathZone && physA == App->scene_intro->ball)
+
+    p2List_item<PhysBody*>* c = App->scene_intro->balls.getFirst();
+    while (c != NULL)
+   // if (physA == App->scene_intro->ball && physB == App->scene_intro->ball)
       //  physA->listener->OnCollision(physA, physB);
 
     if (physB && physB->listener != NULL)
         physB->listener->OnCollision(physB, physA);
+        */
 }
