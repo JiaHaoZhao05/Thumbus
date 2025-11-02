@@ -145,3 +145,87 @@ private:
 	Timer time;
 
 };
+
+class Flipper : public PhysicEntity
+{
+public:
+	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture, int id)
+		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y, id), _listener)
+		, texture(_texture)
+	{
+		PhysBody* pbody = static_cast<PhysBody*>(physBody);
+		_id = id;
+		if (_id == 1) {
+			leftPaddle = pbody->body;
+			leftJoint = pbody->joint;
+
+		}
+		else if (_id == 2) {
+			rightPaddle = pbody->body;
+			rightJoint = pbody->joint;
+		}
+
+	}
+
+	void Update() {
+		//Draw
+		int x, y;
+		physBody->GetPhysicPosition(x, y);
+		Vector2 position{ (float)x, (float)y };
+		float scale = 1.0f;
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
+		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
+		float rotation = physBody->GetRotation() * RAD2DEG;
+		if (_id == 1) rotation -= 13;
+		if (_id == 2) rotation += 13;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		Move();
+	}
+
+	void Move() {
+		if (_id == 1) {
+			if (IsKeyDown(KEY_LEFT))
+			{
+				leftJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_LEFT))
+					leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
+			}
+			else
+			{
+				float leftAngle = leftPaddle->GetAngle();
+				float leftTarget = -30 * DEGTORAD;
+				float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
+				leftJoint->EnableMotor(true);
+				leftJoint->SetMotorSpeed(leftSpeed);
+				leftJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
+
+		if (_id == 2) {
+			if (IsKeyDown(KEY_RIGHT))
+			{
+				rightJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_RIGHT))
+					rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
+			}
+			else
+			{
+				float rightAngle = rightPaddle->GetAngle();
+				float rightTarget = 30 * DEGTORAD;
+				float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
+				rightJoint->EnableMotor(true);
+				rightJoint->SetMotorSpeed(rightSpeed);
+				rightJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
+	}
+private:
+	Texture2D texture;
+	int _id;
+	b2Body* leftPaddle = nullptr;
+	b2Body* rightPaddle = nullptr;
+	b2RevoluteJoint* leftJoint = nullptr;
+	b2RevoluteJoint* rightJoint = nullptr;
+};

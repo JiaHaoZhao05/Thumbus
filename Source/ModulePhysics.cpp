@@ -481,10 +481,8 @@ PhysBody* ModulePhysics::CreateFlipper(int height, int width, float density, flo
 
 PhysBody* ModulePhysics::CreateDeathZone()
 {
-    //int x = 250;
-    //int y = 675;
-    //int radius = 20;
-    int y = 650;
+    int x = 250;
+    int y = 675;
     int width = 500;
     int height = 300;
     PhysBody* pbody = new PhysBody();
