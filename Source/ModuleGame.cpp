@@ -98,58 +98,53 @@ update_status ModuleGame::Update()
 	return UPDATE_CONTINUE;
 }
 
-static constexpr int outerBackground[102] = {
+static constexpr int outerBackground[92] = {
 	241, 6,
-	147, 25,
-	81, 81,
-	40, 151,
-	13, 244,
-	3, 340,
-	8, 414,
-	26, 477,
-	31, 504,
-	96, 576,
-	111, 579,
-	146, 582,
-	155, 590,
-	167, 595,
-	180, 618,
-	177, 628,
-	160, 617,
-	137, 620,
-	97, 640,
-	97, 706,
-	82, 724,
-	77, 745,
-	68, 763,
-	92, 771,
-	111, 782,
-	125, 798,
-	126, 849,
-	365, 853,
-	371, 798,
-	380, 784,
-	395, 773,
-	397, 709,
-	380, 696,
-	372, 658,
-	352, 628,
-	312, 620,
-	325, 598,
-	344, 581,
-	381, 579,
-	401, 577,
-	448, 537,
-	451, 784,
-	478, 784,
-	478, 457,
-	491, 357,
-	488, 270,
-	472, 194,
-	442, 118,
-	398, 60,
-	347, 25,
-	286, 6
+	165, 17,
+	123, 38,
+	80, 78,
+	49, 128,
+	27, 183,
+	12, 246,
+	5, 310,
+	9, 407,
+	18, 485,
+	28, 536,
+	58, 590,
+	88, 627,
+	116, 651,
+	137, 665,
+	112, 686,
+	108, 756,
+	95, 763,
+	90, 778,
+	110, 779,
+	143, 784,
+	166, 802,
+	158, 921,
+	366, 919,
+	369, 801,
+	379, 789,
+	390, 785,
+	394, 699,
+	385, 681,
+	362, 680,
+	355, 667,
+	378, 650,
+	400, 632,
+	415, 610,
+	445, 570,
+	452, 785,
+	478, 785,
+	476, 464,
+	488, 404,
+	492, 328,
+	485, 244,
+	466, 173,
+	435, 105,
+	396, 57,
+	358, 29,
+	301, 9
 };
 
 static constexpr int triangle1[10] = { //bottom right triangle
@@ -221,7 +216,7 @@ static constexpr int thumbusLeft[28] = {
 void ModuleGame::CreateWorld() {
 
 	//background
-	entities.emplace_back(new Background(App->physics, 0, 0, outerBackground, 102, this, outerBackgroundTex));
+	entities.emplace_back(new Background(App->physics, 0, 0, outerBackground, 92, this, outerBackgroundTex));
 
 	//bumpers
 	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 30, this, bumperTex, bumperTexAux));
@@ -238,8 +233,8 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex, triangle4TexAux));
 
 	//flippers
-	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 663, this, paddleLeftTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 663, this, paddleRightTex, 2));
+	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 677, this, paddleLeftTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 679, this, paddleRightTex, 2));
 
 	//spring
 	entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, springTex));
