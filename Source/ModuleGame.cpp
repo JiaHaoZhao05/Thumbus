@@ -40,6 +40,7 @@ bool ModuleGame::Start()
 	triangle2TexAux = LoadTexture("Assets/Map/triangle22.png");
 	triangle3TexAux = LoadTexture("Assets/Map/triangle32.png");
 	triangle4TexAux = LoadTexture("Assets/Map/triangle42.png");
+	springTex = LoadTexture("Assets/Map/Untitled_Artwork(8).png");
 
 	//load sounds
 	bumperFX = App->audio->LoadFx("Assets/sound.wav");
@@ -241,7 +242,7 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 663, this, paddleRightTex, 2));
 
 	//spring
-	//entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, paddleLeftTex));
+	entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, springTex));
 
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();

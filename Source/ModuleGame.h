@@ -41,6 +41,7 @@ public:
 	Texture2D triangle4TexAux;
 	Texture2D paddleLeftTex;
 	Texture2D paddleRightTex;
+	Texture2D springTex;
 
 	//sounds
 	unsigned int bumperFX;
