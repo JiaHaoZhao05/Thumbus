@@ -66,9 +66,6 @@
     <ClInclude Include="Source\Player.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Flipper.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

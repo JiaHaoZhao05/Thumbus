@@ -225,7 +225,7 @@ public:
 		: PhysicEntity(physics->CreateSpring(height, width, density, friction, x, y), _listener)
 		, texture(_texture)
 	{
-		springBody = static_cast<PhysBody*>(body)->body;
+		springBody = static_cast<PhysBody*>(body);
 		springPrismatic = springBody->prismaticJoint;
 	}
 
@@ -271,7 +271,7 @@ public:
 			springPrismatic->EnableMotor(false);
 
 			// aplicar impulso hacia arriba
-			springBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
+			springBody->body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
 		}
 		else { //si no estas haciendo nada, gravedad mueve el muelle, esto hace que vuelva a su posicion inicial, no lo quites Erik
 			if (currentTranslation > PIXELS_TO_METERS(0.5f)) {
@@ -287,7 +287,7 @@ public:
 
 private:
 	Texture2D texture;
-	b2Body* springBody;
+	PhysBody* springBody;
 	b2PrismaticJoint* springPrismatic;
 };
 
