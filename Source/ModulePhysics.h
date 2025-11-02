@@ -32,6 +32,7 @@ public:
 	int width, height;
 	b2Body* body;
 	Module* listener;
+	b2RevoluteJoint* joint = nullptr;
 };
 
 // Module --------------------------------------
@@ -47,6 +48,7 @@ public:
 	bool CleanUp();
 
 	PhysBody* CreateBall(int x, int y, int radius);
+	PhysBody* CreateFlipper(int height, int width, float density, float friction, int x, int y, int id);
 	PhysBody* CreateBumper(int x, int y, int radius);
 	PhysBody* CreateDeathZone();
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
@@ -60,7 +62,6 @@ public:
 	b2RevoluteJoint* rightJoint = nullptr;
 
 	b2World* world = nullptr; //public for player elimination
-
 private:
 
 	bool debug;

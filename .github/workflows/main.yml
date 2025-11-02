@@ -1,0 +1,57 @@
+name: Release
+on: workflow_dispatch
+  
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build solution
+        run: msbuild PhysicsGame.sln /p:Configuration=Release
+
+      - name: Create artifact directory
+        run:  |
+          mkdir ./artifact
+          mkdir ./artifact/PhysicsGame
+      - name: Copy the executable to the artifact directory
+        run:  copy ./Build/PhysicsGame/Release/win32/PhysicsGame.exe ./artifact/PhysicsGame/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4 
+        with: 
+          name: PhysicsGame-artifact
+          path: ./artifact/
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Create a Release
+        uses: elgohr/Github-Release-Action@v5
+        env:
+          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
+        with:
+          title: New relase
+
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v4
+        with: 
+          name: PhysicsGame-artifact
+          path:  ./artifact/
+      
+      - name: GitHub Releases
+        uses: fnkr/github-action-ghr@v1.3
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GHR_COMPRESS: zip
+          GHR_PATH: ./artifact/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

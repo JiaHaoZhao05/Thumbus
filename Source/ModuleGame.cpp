@@ -7,6 +7,90 @@
 #include "PhysicEntity.h"
 #include "Player.h"
 
+class Flipper : public PhysicEntity
+{
+public:
+	Flipper(ModulePhysics* physics, int height, int width, float density, float friction, int x, int y, Module* _listener, Texture2D _texture, int id)
+		: PhysicEntity(physics->CreateFlipper(height, width, density, friction, x, y, id), _listener)
+		, texture(_texture) 
+	{
+		PhysBody* pbody = static_cast<PhysBody*>(body);
+		_id = id;
+		if (_id == 1) {
+			leftPaddle = pbody->body;
+			leftJoint = pbody->joint;
+
+		}
+		else if (_id == 2) {
+			rightPaddle = pbody->body;
+			rightJoint = pbody->joint;
+		}
+
+	}
+
+	void Update() {
+		//Draw
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Vector2 position{ (float)x, (float)y };
+		float scale = 1.0f;
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
+		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+		if (_id == 1) rotation -= 13;
+		if (_id == 2) rotation += 13;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		Move();
+	}
+
+	void Move() {
+		if (_id == 1) {
+			if (IsKeyDown(KEY_LEFT))
+			{
+				leftJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_LEFT))
+					leftPaddle->ApplyAngularImpulse(-40.0f, true); // flip upward
+			}
+			else
+			{
+				float leftAngle = leftPaddle->GetAngle();
+				float leftTarget = -30 * DEGTORAD;
+				float leftSpeed = -(leftTarget - leftAngle) * 12.0f;
+				leftJoint->EnableMotor(true);
+				leftJoint->SetMotorSpeed(leftSpeed);
+				leftJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
+
+		if (_id == 2) {
+			if (IsKeyDown(KEY_RIGHT))
+			{
+				rightJoint->EnableMotor(false);
+				if (IsKeyPressed(KEY_RIGHT))
+					rightPaddle->ApplyAngularImpulse(40.0f, true); // flip upward
+			}
+			else
+			{
+				float rightAngle = rightPaddle->GetAngle();
+				float rightTarget = 30 * DEGTORAD;
+				float rightSpeed = -(rightTarget - rightAngle) * 12.0f;
+				rightJoint->EnableMotor(true);
+				rightJoint->SetMotorSpeed(rightSpeed);
+				rightJoint->SetMaxMotorTorque(50.0f);
+			}
+		}
+	}
+private:
+	Texture2D texture;
+	int _id;
+	b2Body* leftPaddle = nullptr;
+	b2Body* rightPaddle = nullptr;
+	b2RevoluteJoint* leftJoint = nullptr;
+	b2RevoluteJoint* rightJoint = nullptr;
+};
+
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	
@@ -91,7 +175,7 @@ update_status ModuleGame::Update()
 	return UPDATE_CONTINUE;
 }
 
-static constexpr int outerBackground[48] = {
+static constexpr int outerBackground[102] = {
 	241, 6,
 	147, 25,
 	81, 81,
@@ -100,22 +184,49 @@ static constexpr int outerBackground[48] = {
 	3, 340,
 	8, 414,
 	26, 477,
-	45, 522,
-	133, 585,
-	90, 637,
-	86, 708,
-	397, 716,
-	398, 634,
-	368, 584,
-	443, 530,
-	445, 786,
-	479, 783,
-	486, 419,
-	494, 316,
-	482, 219,
-	455, 142,
-	414, 78,
-	346, 22
+	31, 504,
+	96, 576,
+	111, 579,
+	146, 582,
+	155, 590,
+	167, 595,
+	180, 618,
+	177, 628,
+	160, 617,
+	137, 620,
+	97, 640,
+	97, 706,
+	82, 724,
+	77, 745,
+	68, 763,
+	92, 771,
+	111, 782,
+	125, 798,
+	126, 849,
+	365, 853,
+	371, 798,
+	380, 784,
+	395, 773,
+	397, 709,
+	380, 696,
+	372, 658,
+	352, 628,
+	312, 620,
+	325, 598,
+	344, 581,
+	381, 579,
+	401, 577,
+	448, 537,
+	451, 784,
+	478, 784,
+	478, 457,
+	491, 357,
+	488, 270,
+	472, 194,
+	442, 118,
+	398, 60,
+	347, 25,
+	286, 6
 };
 
 static constexpr int triangle1[10] = { //bottom right triangle
@@ -187,7 +298,7 @@ static constexpr int thumbusLeft[28] = {
 void ModuleGame::CreateWorld() {
 
 	//background
-	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 48, this, outerBackgroundTex));
+	entities.emplace_back(new Background(App-> physics, 0, 0, outerBackground, 102, this, outerBackgroundTex));
 
 	//bumpers
 	entities.emplace_back(new Bumper(App->physics, bumper1Pos.x, bumper1Pos.y, 30, this, bumperTex, bumperTexAux));
@@ -203,9 +314,13 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex, triangle3TexAux));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex, triangle4TexAux));
 
+	//flippers
+	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 663, this, paddleLeftTex, 1));
+	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 663, this, paddleRightTex, 2));
+
 	//deathzone
 	deathZone = App->physics->CreateDeathZone();
 	//entities.emplace_back(deathZone, deathZone->listener);
 
-	//sounds
-}
+//Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
+// the flippers move
