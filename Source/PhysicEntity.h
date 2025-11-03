@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Globals.h"
-#include "Module.h"
 #include "timer.h"
 
 #include "p2Point.h"
