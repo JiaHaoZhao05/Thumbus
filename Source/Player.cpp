@@ -49,6 +49,11 @@ update_status ModulePlayer::Update()
             previousScore = currentScore;
             currentScore = 0;
             balls = 3;
+            if (thumb > 0) {
+                for (auto& pEntity : App->scene_intro->entities) {
+                    if (pEntity->type == 4) pEntity->isSwitched = false;
+                }
+            }
             App->audio->PlayFx(App->scene_intro->gameOverFX-1);
         }
         if (isExtraBall && balls == 0);
@@ -73,6 +78,7 @@ void ModulePlayer::RespawnBall() {
         ball->physBody->body->SetFixedRotation(true);
         ball->physBody->body->SetFixedRotation(false);
         ball->physBody->body->SetTransform({ 0.02f * startPos.x,0.02f * startPos.y }, 0);
+     
     }
 }
 
