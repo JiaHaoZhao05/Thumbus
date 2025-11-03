@@ -53,6 +53,7 @@ update_status ModulePlayer::Update()
                 for (auto& pEntity : App->scene_intro->entities) {
                     if (pEntity->type == 4) pEntity->isSwitched = false;
                 }
+                thumb = 0;
             }
             App->audio->PlayFx(App->scene_intro->gameOverFX-1);
             App->scene_intro->ResetMusic();
