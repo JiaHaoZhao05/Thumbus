@@ -203,7 +203,7 @@ update_status ModulePhysics::PostUpdate()
             App->physics->world->SetGravity(temp);
         }
         if (App->renderer->selector == 1) { //reduce friction
-            App->player->friction -= 0.5f;
+            App->player->friction -= 0.05f;
             if (App->player->friction < 0) App->player->friction = 0;
             App->player->ModedBallFriction(App->player->friction);
         }
@@ -221,7 +221,7 @@ update_status ModulePhysics::PostUpdate()
             App->physics->world->SetGravity(temp);
         }
         if (App->renderer->selector == 1) { //increase friction
-            App->player->friction += 0.5f;
+            App->player->friction += 0.05f;
             App->player->ModedBallFriction(App->player->friction);
         }
         if (App->renderer->selector == 2) { //increase fps
