@@ -85,6 +85,13 @@ void::ModulePlayer::ModedBallFriction(float friction) {
         delete ball->physBody;
         ball = new Ball(App->physics, x, y, this, ballTex, friction);
     }
+    if (isExtraBall && extraBall->physBody != nullptr) {
+        int x, y;
+        extraBall->physBody->GetPhysicPosition(x, y);
+        App->physics->world->DestroyBody(extraBall->physBody->body);
+        delete extraBall->physBody;
+        extraBall = new Ball(App->physics, x, y, this, xtraballTex, friction);
+    }
 }
 
 
