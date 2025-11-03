@@ -146,6 +146,50 @@ private:
 
 };
 
+class Sensor : public PhysicEntity
+{
+public:
+	Sensor(ModulePhysics* physics, int _x, int _y, const int* points, int size, Module* _listener, Texture2D _texture, Texture2D _textureAux)
+		: PhysicEntity(physics->CreateChainSensor(_x, _y, points, size), _listener)
+		, texture(_texture), textureAux(_textureAux)
+	{
+		type = 4;
+	}
+
+	void Update() override
+	{
+		if (isSwitched) {
+			DrawTexture(textureAux, 0, 0, WHITE);
+		}
+		else {
+			DrawTexture(texture, 0, 0, WHITE);
+		}
+	}
+private:
+	Texture2D texture;
+	Texture2D textureAux;
+
+};
+
+class DeathZone : public PhysicEntity
+{
+public:
+	DeathZone(ModulePhysics* physics, Module* _listener)
+		: PhysicEntity(physics->CreateDeathZone(), _listener)
+	{
+		type = 5;
+	}
+
+	void Update() override
+	{
+	
+	}
+private:
+	Texture2D texture;
+	Texture2D textureAux;
+
+};
+
 class Flipper : public PhysicEntity
 {
 public:

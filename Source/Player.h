@@ -17,6 +17,7 @@ public:
 
 	void RespawnBall();
 	void ModedBallFriction(float friction);
+	void ExtraBall();
 
 public:
 
@@ -26,7 +27,11 @@ public:
 	int balls = 3;
 	int currentBalls = 0;
 
+	int thumb = 0;
+	bool isExtraBall;
+
 	PhysicEntity* ball;
+	PhysicEntity* extraBall;
 	Texture2D ballTex;
 	float ballRadius = 12.5f;
 	float friction = 0;

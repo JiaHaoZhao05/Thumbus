@@ -464,20 +464,20 @@ PhysBody* ModulePhysics::CreateSpring(int height, int width, float density, floa
 
 PhysBody* ModulePhysics::CreateDeathZone()
 {
-    int x = 250;
-    int y = 675;
-    int width = 500;
-    int height = 300;
+    int x = 245;
+    int y = 765;
+    int radius = 30;
     PhysBody* pbody = new PhysBody();
 
     b2BodyDef body;
-    body.type = b2_dynamicBody;
+    body.type = b2_staticBody;
     body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
     body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
     b2Body* b = world->CreateBody(&body);
-    b2PolygonShape shape;
-    shape.SetAsBox(width, height);
+
+    b2CircleShape shape;
+    shape.m_radius = PIXEL_TO_METERS(radius);
     b2FixtureDef fixture;
     fixture.shape = &shape;
     fixture.density = 0.0f;
@@ -486,8 +486,6 @@ PhysBody* ModulePhysics::CreateDeathZone()
     b->CreateFixture(&fixture);
 
     pbody->body = b;
-    pbody->width = width ;
-    pbody->height = height ;
 
     return pbody;
 }
@@ -702,6 +700,17 @@ void ModulePhysics::BeginContact(b2Contact* contact)
             }
             if (pEntity->type == 3) { //check background
 
+            }
+            if (pEntity->type == 4) { //check background
+                if (!pEntity->isSwitched) {
+                    App->audio->PlayFx(App->scene_intro->bumperFX);
+                    App->player->thumb++;
+                    pEntity->isSwitched = true;
+                    if (App->player->thumb == 5)App->player->ExtraBall();
+                }    
+            }
+            if (pEntity->type == 5) { //check background
+                App->player->RespawnBall();
             }
         }
     }

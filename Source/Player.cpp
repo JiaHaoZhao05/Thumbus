@@ -67,6 +67,11 @@ void::ModulePlayer::ModedBallFriction(float friction) {
     }
 }
 
+
+void ModulePlayer::ExtraBall() {
+
+}
+
 void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
     //currentScore++;
 }

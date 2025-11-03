@@ -40,6 +40,16 @@ bool ModuleGame::Start()
 	triangle2TexAux = LoadTexture("Assets/Map/triangle22.png");
 	triangle3TexAux = LoadTexture("Assets/Map/triangle32.png");
 	triangle4TexAux = LoadTexture("Assets/Map/triangle42.png");
+	tyellowTex = LoadTexture("Assets/tyellow.png");
+	tblueTex = LoadTexture("Assets/tblue.png");
+	hyellowTex = LoadTexture("Assets/hyellow.png");
+	hblueTex = LoadTexture("Assets/hblue.png");
+	uyellowTex = LoadTexture("Assets/uyellow.png");
+	ublueTex = LoadTexture("Assets/ublue.png");
+	myellowTex = LoadTexture("Assets/myellow.png");
+	mblueTex = LoadTexture("Assets/mblue.png");
+	byellowTex = LoadTexture("Assets/byellow.png");
+	bblueTex = LoadTexture("Assets/bblue.png");
 
 	//load sounds
 	bumperFX = App->audio->LoadFx("Assets/sound.wav");
@@ -188,6 +198,7 @@ static constexpr int thumbusRight[28] = {
 	289, 690,
 	273, 697
 };
+
 static constexpr int thumbusLeft[28] = {
 	231, 690,
 	227, 698,
@@ -205,6 +216,44 @@ static constexpr int thumbusLeft[28] = {
 	229, 684
 };
 
+static constexpr int t[12] = {
+	187, 404,
+	230, 440,
+	206, 451,
+	170, 474,
+	155, 455,
+	178, 426
+};
+
+static constexpr int h[8] = {
+	39, 345,
+	80, 306,
+	117, 349,
+	77, 387
+};
+
+static constexpr int u[12] = {
+	219, 254,
+	268, 254,
+	265, 297,
+	247, 318,
+	208, 316,
+	202, 281
+};
+
+static constexpr int m[8] = {
+	293, 138,
+	351, 141,
+	358, 209,
+	277, 202
+};
+
+static constexpr int b[8] = {
+	322, 306,
+	367, 297,
+	385, 361,
+	337, 375
+};
 
 void ModuleGame::CreateWorld() {
 
@@ -229,11 +278,22 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 677, this, paddleLeftTex, 1));
 	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 679, this, paddleRightTex, 2));
 
+	//sensors
+	entities.emplace_back(new Sensor(App->physics, 0, 0, t, 12, this, tblueTex, tyellowTex));
+	entities.emplace_back(new Sensor(App->physics, 0, 0, h, 8, this, hblueTex, hyellowTex));
+	entities.emplace_back(new Sensor(App->physics, 0, 0, u, 12, this, ublueTex, uyellowTex));
+	entities.emplace_back(new Sensor(App->physics, 0, 0, m, 8, this, mblueTex, myellowTex));
+	entities.emplace_back(new Sensor(App->physics, 0, 0, b, 8, this, bblueTex, byellowTex));
+
+	//deathzone
+	entities.emplace_back(new DeathZone(App->physics,this));
+
+
+
 	//spring
 	//entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, paddleLeftTex));
 
-	//deathzone
-	deathZone = App->physics->CreateDeathZone();
+	
 	//entities.emplace_back(deathZone, deathZone->listener);
 }
 //Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make

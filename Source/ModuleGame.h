@@ -41,6 +41,16 @@ public:
 	Texture2D triangle4TexAux;
 	Texture2D paddleLeftTex;
 	Texture2D paddleRightTex;
+	Texture2D tyellowTex;
+	Texture2D tblueTex;
+	Texture2D hyellowTex;
+	Texture2D hblueTex;
+	Texture2D uyellowTex;
+	Texture2D ublueTex;
+	Texture2D myellowTex;
+	Texture2D mblueTex;
+	Texture2D byellowTex;
+	Texture2D bblueTex;
 
 	//sounds
 	unsigned int bumperFX;
