@@ -42,15 +42,14 @@ update_status ModulePlayer::Update()
     if (isDead) {
         balls--;
         isDead = false;
-        if (!isExtraBall) {
-            if (balls <= 0) {
-                if (currentScore > highScore) highScore = currentScore;
-                previousScore = currentScore;
-                currentScore = 0;
-                balls = 3;
-            }
-            RespawnBall();
+        if (!isExtraBall && balls <= 0) {
+            if (currentScore > highScore) highScore = currentScore;
+            previousScore = currentScore;
+            currentScore = 0;
+            balls = 3;
         }
+        if (isExtraBall && balls == 0);
+        else RespawnBall();
     }
     if (thumb == 5 && !isExtraBall) {
         ExtraBall();
