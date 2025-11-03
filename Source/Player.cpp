@@ -48,7 +48,7 @@ update_status ModulePlayer::Update()
             previousScore = currentScore;
             currentScore = 0;
             balls = 3;
-            App->audio->PlayFx(App->scene_intro->gameOverFX);
+            App->audio->PlayFx(App->scene_intro->gameOverFX-1);
         }
         if (isExtraBall && balls == 0);
         else RespawnBall();
@@ -67,7 +67,7 @@ update_status ModulePlayer::Update()
 void ModulePlayer::RespawnBall() {
     LOG("RESPAWNBALL");
     if (balls >= 0 && ball->physBody != nullptr) {
-        App->audio->PlayFx(App->scene_intro->respawnFX);
+        App->audio->PlayFx(App->scene_intro->respawnFX-1);
         ball->physBody->body->SetLinearVelocity({ 0,0.1 });
         ball->physBody->body->SetFixedRotation(true);
         ball->physBody->body->SetFixedRotation(false);
@@ -89,7 +89,7 @@ void::ModulePlayer::ModedBallFriction(float friction) {
 
 void ModulePlayer::ExtraBall() {
     currentScore += 1000;
-    App->audio->PlayFx(App->scene_intro->extraBallFX);
+    App->audio->PlayFx(App->scene_intro->extraBallFX-1);
     extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, ballTex, friction);
     isExtraBall = true;
 }

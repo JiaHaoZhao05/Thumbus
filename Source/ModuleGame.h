@@ -19,7 +19,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	void ModuleGame::CreateWorld();
+	void CreateWorld();
+	void PlayRandomSound();
 
 	std::vector<PhysicEntity*> entities;
 
@@ -55,12 +56,18 @@ public:
 	//sounds
 	unsigned int bumperFX;
 	unsigned int bumperFX2;
+	unsigned int bumperFX3;
 	unsigned int springFX;
 	unsigned int flipperFX;
 	unsigned int deathFX;
 	unsigned int respawnFX;
 	unsigned int gameOverFX;
 	unsigned int extraBallFX;
+	unsigned int sensorFX1;
+	unsigned int sensorFX2;
+	unsigned int sensorFX3;
+	unsigned int sensorFX4;
+	unsigned int sensorFX5;
 
 	//positions
 	Vector2 bumper1Pos = { 150, 300 };

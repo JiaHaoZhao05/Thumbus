@@ -54,14 +54,20 @@ bool ModuleGame::Start()
 
 
 	//load sounds
-	bumperFX = App->audio->LoadFx("Assets/Sounds/sound1.wav");
-	bumperFX2 = App->audio->LoadFx("Assets/Sounds/sound2.wav");
+	bumperFX = App->audio->LoadFx("Assets/Sounds/bumperFX.wav");
+	bumperFX2 = App->audio->LoadFx("Assets/Sounds/bumperFX2.wav");
+	bumperFX3 = App->audio->LoadFx("Assets/Sounds/bumperFX3.wav");
 	springFX = App->audio->LoadFx("Assets/Sounds/springFX.wav");
 	flipperFX = App->audio->LoadFx("Assets/Sounds/flipperFX.wav");
 	deathFX = App->audio->LoadFx("Assets/Sounds/deathFX.wav");
 	respawnFX = App->audio->LoadFx("Assets/Sounds/respawnFX.wav");
 	gameOverFX = App->audio->LoadFx("Assets/Sounds/gameOverFX.wav");
 	extraBallFX = App->audio->LoadFx("Assets/Sounds/extraBallFX.wav");
+	sensorFX1 = App->audio->LoadFx("Assets/Sounds/sensorFX1.wav");
+	sensorFX2 = App->audio->LoadFx("Assets/Sounds/sensorFX2.wav");
+	sensorFX3 = App->audio->LoadFx("Assets/Sounds/sensorFX3.wav");
+	sensorFX4 = App->audio->LoadFx("Assets/Sounds/sensorFX4.wav");
+	sensorFX5 = App->audio->LoadFx("Assets/Sounds/sensorFX5.wav");
 
 	CreateWorld();
 	return ret;
@@ -280,3 +286,29 @@ void ModuleGame::CreateWorld() {
 }
 //Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
 // the flippers move
+
+void ModuleGame::PlayRandomSound() {
+	int r = rand() % 6;
+
+	switch (r)
+	{
+	case 0:
+		App->audio->PlayFx(bumperFX-1);
+		break;
+	case 1:
+		App->audio->PlayFx(bumperFX2-1);
+		break;
+	case 2:
+		App->audio->PlayFx(bumperFX3-1);
+		break;
+	case 3:
+		App->audio->PlayFx(bumperFX-1);
+		break;
+	case 4:
+		App->audio->PlayFx(bumperFX2-1);
+		break;
+	case 5:
+		App->audio->PlayFx(bumperFX - 1);
+		break;
+	}
+}
