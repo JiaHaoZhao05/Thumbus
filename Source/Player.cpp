@@ -88,6 +88,7 @@ void::ModulePlayer::ModedBallFriction(float friction) {
 
 
 void ModulePlayer::ExtraBall() {
+    currentScore += 1000;
     App->audio->PlayFx(App->scene_intro->extraBallFX);
     extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, ballTex, friction);
     isExtraBall = true;

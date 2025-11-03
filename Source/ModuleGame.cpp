@@ -57,17 +57,12 @@ bool ModuleGame::Start()
 	bumperFX = App->audio->LoadFx("Assets/Sounds/sound1.wav");
 	bumperFX2 = App->audio->LoadFx("Assets/Sounds/sound2.wav");
 	springFX = App->audio->LoadFx("Assets/Sounds/springFX.wav");
-	flipperFX = App->audio->LoadFx("Assets/Sound/sflipperFX.wav");
+	flipperFX = App->audio->LoadFx("Assets/Sounds/flipperFX.wav");
 	deathFX = App->audio->LoadFx("Assets/Sounds/deathFX.wav");
 	respawnFX = App->audio->LoadFx("Assets/Sounds/respawnFX.wav");
 	gameOverFX = App->audio->LoadFx("Assets/Sounds/gameOverFX.wav");
 	extraBallFX = App->audio->LoadFx("Assets/Sounds/extraBallFX.wav");
 
-	//rick = LoadTexture("Assets/rick_head.png");
-
-	//bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
-
-	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	CreateWorld();
 	return ret;
 }
@@ -278,13 +273,10 @@ void ModuleGame::CreateWorld() {
 	//deathzone
 	entities.emplace_back(new DeathZone(App->physics,this));
 
-
-
 	//spring
 	entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, springTex));
 
-	
-	//entities.emplace_back(deathZone, deathZone->listener);
+
 }
 //Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
 // the flippers move

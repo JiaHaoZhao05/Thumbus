@@ -23,7 +23,6 @@ public:
 
 	std::vector<PhysicEntity*> entities;
 
-	PhysBody* deathZone;
 
 	//textures
 	Texture2D bumperTex;
