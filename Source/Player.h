@@ -3,10 +3,14 @@
 #include "Globals.h"
 #include "p2Point.h"
 
+
+
+
 class PhysicEntity;
 class ModulePlayer : public Module
 {
 public:
+
 	ModulePlayer(Application* app, bool start_enabled = true);
 	virtual ~ModulePlayer();
 
@@ -26,9 +30,10 @@ public:
 	int highScore = 0 ;
 	int balls = 3;
 	int currentBalls = 0;
+	bool isDead = false;
 
 	int thumb = 0;
-	bool isExtraBall;
+	bool isExtraBall = false;
 
 	PhysicEntity* ball;
 	PhysicEntity* extraBall;
@@ -36,4 +41,5 @@ public:
 	float ballRadius = 12.5f;
 	float friction = 0;
 	Vector2 startPos = {465,550};
+	Vector2 startPosExtra = { 248,30 };
 };

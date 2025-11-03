@@ -39,6 +39,23 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
+    if (isDead) {
+        balls--;
+        isDead = false;
+        if (!isExtraBall) {
+            if (balls <= 0) {
+                if (currentScore > highScore) highScore = currentScore;
+                previousScore = currentScore;
+                currentScore = 0;
+                balls = 3;
+            }
+            RespawnBall();
+        }
+    }
+    if (thumb == 5 && !isExtraBall) {
+        ExtraBall();
+    }
+    if (isExtraBall) extraBall->Update();
     ball->Update();
 
 
@@ -48,11 +65,11 @@ update_status ModulePlayer::Update()
 // Ball respawn as long as there are balls left
 void ModulePlayer::RespawnBall() {
     LOG("RESPAWNBALL");
-    if (balls > 0 && ball->physBody != nullptr) {
-        balls--;
-        App->physics->world->DestroyBody(ball->physBody->body);
-        delete ball->physBody;
-        ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex, friction);
+    if (balls >= 0 && ball->physBody != nullptr) {
+        ball->physBody->body->SetLinearVelocity({ 0,0.1 });
+        ball->physBody->body->SetFixedRotation(true);
+        ball->physBody->body->SetFixedRotation(false);
+        ball->physBody->body->SetTransform({ 0.02f * startPos.x,0.02f * startPos.y }, 0);
     }
 }
 
@@ -69,7 +86,8 @@ void::ModulePlayer::ModedBallFriction(float friction) {
 
 
 void ModulePlayer::ExtraBall() {
-
+    extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, ballTex, friction);
+    isExtraBall = true;
 }
 
 void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {

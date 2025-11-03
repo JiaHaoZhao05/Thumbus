@@ -464,9 +464,8 @@ PhysBody* ModulePhysics::CreateSpring(int height, int width, float density, floa
 
 PhysBody* ModulePhysics::CreateDeathZone()
 {
-    int x = 245;
-    int y = 765;
-    int radius = 30;
+    float  x = 245;
+    float y = 765;
     PhysBody* pbody = new PhysBody();
 
     b2BodyDef body;
@@ -476,8 +475,9 @@ PhysBody* ModulePhysics::CreateDeathZone()
 
     b2Body* b = world->CreateBody(&body);
 
-    b2CircleShape shape;
-    shape.m_radius = PIXEL_TO_METERS(radius);
+    b2PolygonShape shape;
+    shape.SetAsBox(PIXEL_TO_METERS(150), PIXEL_TO_METERS(20));
+
     b2FixtureDef fixture;
     fixture.shape = &shape;
     fixture.density = 0.0f;
@@ -701,16 +701,55 @@ void ModulePhysics::BeginContact(b2Contact* contact)
             if (pEntity->type == 3) { //check background
 
             }
-            if (pEntity->type == 4) { //check background
+            if (pEntity->type == 4) { //check sensors
                 if (!pEntity->isSwitched) {
                     App->audio->PlayFx(App->scene_intro->bumperFX);
                     App->player->thumb++;
                     pEntity->isSwitched = true;
-                    if (App->player->thumb == 5)App->player->ExtraBall();
                 }    
             }
-            if (pEntity->type == 5) { //check background
-                App->player->RespawnBall();
+            if (pEntity->type == 5) { //check deathzone
+                
+                App->player->isDead=true;
+            }
+        }
+    }
+
+    if (App->player->isExtraBall == true) {
+        PhysBody* extraBall = App->player->extraBall->physBody;
+        for (auto& pEntity : App->scene_intro->entities) {
+            if (physA == pEntity->physBody && physB == extraBall) {
+
+                if (pEntity->type == 1) { //check bumpers
+                    App->player->currentScore += 75;
+                    pEntity->isSwitched = true;
+                    App->audio->PlayFx(App->scene_intro->bumperFX);
+                }
+                if (pEntity->type == 2) { //check triangles
+                    App->player->currentScore += 50;
+                    pEntity->isSwitched = true;
+                    App->audio->PlayFx(App->scene_intro->bumperFX);
+                }
+                if (pEntity->type == 3) { //check background
+
+                }
+                if (pEntity->type == 4) { //check sensors
+                    if (!pEntity->isSwitched) {
+                        App->audio->PlayFx(App->scene_intro->bumperFX);
+                        App->player->thumb++;
+                        pEntity->isSwitched = true;
+                        //if (App->player->thumb == 5)App->player->isExtraBall = true;
+                    }
+                }
+                if (pEntity->type == 5) { //check deathzone
+
+                    App->player->isExtraBall = false;
+                    App->player->thumb = 0;
+                    for (auto& pEntity : App->scene_intro->entities) {
+                        if (pEntity->type == 4) pEntity->isSwitched = false;
+                    }
+                    if (App->player->balls == 0) App->player->isDead = true;
+                }
             }
         }
     }

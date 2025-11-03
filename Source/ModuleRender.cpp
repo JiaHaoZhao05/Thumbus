@@ -49,7 +49,6 @@ update_status ModuleRender::PostUpdate()
     // Draw everything in our batch!
     DrawFPS(10, 10);
     DrawText(TextFormat("Balls: %i", App->player->balls), 10, 30, 20, WHITE);
-    if (App->player->currentScore > App->player->highScore) { App->player->highScore = App->player->currentScore; }
     DrawText(TextFormat("Highscore: %i", App->player->highScore), 10, 50, 20, WHITE);
     DrawText(TextFormat("Current Score: %i", App->player->currentScore), 10, 70, 20, WHITE);
     DrawText(TextFormat("Previous Score: %i", App->player->previousScore), 10, 90, 20, WHITE);

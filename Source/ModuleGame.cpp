@@ -74,29 +74,11 @@ bool ModuleGame::CleanUp()
 
 // Update: draw background
 update_status ModuleGame::Update()
-{
-	/*
-	//ball reset
-	if (IsKeyDown(KEY_ONE)) {
-		ball->physBody->body->SetTransform({ PIXEL_TO_METERS(ballPos.x),PIXEL_TO_METERS(ballPos.y) }, 0);
-		ball->physBody->body->SetLinearVelocity({0,0.1});
-		ball->physBody->body->SetFixedRotation(true);
-		ball->physBody->body->SetFixedRotation(false);
-		*/
-
-
-
-	if (IsKeyPressed(KEY_ONE))
-	{
-		App->player->RespawnBall(); //As long as there are balls left pressing 1 will respawn the ball
-
-	}
-	
+{	
 	for (PhysicEntity* entity : entities)
 	{
 		entity->Update();
 	}
-	//ball->Update();
 
 	return UPDATE_CONTINUE;
 }
