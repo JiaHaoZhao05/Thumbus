@@ -18,10 +18,12 @@ A simple pinball arcade simulator with [Box2D](https://box2d.org/) physics, feat
 * Left arrow -> Move left flipper
 * Right arrow -> Move right flipper
 * Down arrow -> Move the spring
-* Key 1 -> Spawn ball
 * Key F1 -> Debug
 
  	\*(While debugging you can click and drag the ball)
+
+* Debug -> W/S -> Swap between parameters
+* Debug -> A/D -> Subtract or add value to the selected parameter
 
 ## Developers
 
