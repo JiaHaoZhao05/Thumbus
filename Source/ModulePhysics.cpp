@@ -394,8 +394,8 @@ PhysBody* ModulePhysics::CreateSpring(int height, int width, float density, floa
 PhysBody* ModulePhysics::CreateDeathZone()
 {
     float  x = 245;
-    float y = 765;
-    PhysBody* pbody = new PhysBody();
+    float y = 820;
+    PhysBody*pbody = new PhysBody();
 
     b2BodyDef body;
     body.type = b2_staticBody;
