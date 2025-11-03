@@ -328,7 +328,7 @@ public:
 			springPrismatic->EnableMotor(false);
 
 			// aplicar impulso hacia arriba
-			springBody->body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
+			springBody->body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true); 
 		}
 		else { //si no estas haciendo nada, gravedad mueve el muelle, esto hace que vuelva a su posicion inicial, no lo quites Erik
 			if (currentTranslation > PIXEL_TO_METERS(0.5f)) {

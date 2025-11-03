@@ -4,6 +4,7 @@
 #include "ModulePhysics.h"
 #include "ModuleRender.h"
 #include "ModuleGame.h"
+#include "ModuleAudio.h"
 #include "PhysicEntity.h"
 #include "raylib.h"
 
@@ -42,11 +43,12 @@ update_status ModulePlayer::Update()
     if (isDead) {
         balls--;
         isDead = false;
-        if (!isExtraBall && balls <= 0) {
+        if (!isExtraBall && balls <= 0) { //game over
             if (currentScore > highScore) highScore = currentScore;
             previousScore = currentScore;
             currentScore = 0;
             balls = 3;
+            App->audio->PlayFx(App->scene_intro->gameOverFX);
         }
         if (isExtraBall && balls == 0);
         else RespawnBall();
@@ -65,6 +67,7 @@ update_status ModulePlayer::Update()
 void ModulePlayer::RespawnBall() {
     LOG("RESPAWNBALL");
     if (balls >= 0 && ball->physBody != nullptr) {
+        App->audio->PlayFx(App->scene_intro->respawnFX);
         ball->physBody->body->SetLinearVelocity({ 0,0.1 });
         ball->physBody->body->SetFixedRotation(true);
         ball->physBody->body->SetFixedRotation(false);
@@ -85,6 +88,7 @@ void::ModulePlayer::ModedBallFriction(float friction) {
 
 
 void ModulePlayer::ExtraBall() {
+    App->audio->PlayFx(App->scene_intro->extraBallFX);
     extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, ballTex, friction);
     isExtraBall = true;
 }

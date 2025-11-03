@@ -55,13 +55,13 @@ public:
 
 	//sounds
 	unsigned int bumperFX;
-	int bumperFX2;
-	int springFX;
-	int flipperFX;
-	int deathFX;
-	int respawnFX;
-	int gameOverFX;
-	int extraBallFX;
+	unsigned int bumperFX2;
+	unsigned int springFX;
+	unsigned int flipperFX;
+	unsigned int deathFX;
+	unsigned int respawnFX;
+	unsigned int gameOverFX;
+	unsigned int extraBallFX;
 
 	//positions
 	Vector2 bumper1Pos = { 150, 300 };

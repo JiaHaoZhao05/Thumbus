@@ -54,14 +54,14 @@ bool ModuleGame::Start()
 
 
 	//load sounds
-	bumperFX = App->audio->LoadFx("Assets/sound.wav");
-	bumperFX2 = App->audio->LoadFx("Assets/sound.wav");
-	springFX = App->audio->LoadFx("Assets/springFX.wav");
-	flipperFX = App->audio->LoadFx("Assets/flipperFX.wav");
-	deathFX = App->audio->LoadFx("Assets/deathFX.wav");
-	respawnFX = App->audio->LoadFx("Assets/respawnFX.wav");
-	gameOverFX = App->audio->LoadFx("Assets/gameOverFX.wav");
-	extraBallFX = App->audio->LoadFx("Assets/extraBallFX.wav");
+	bumperFX = App->audio->LoadFx("Assets/Sounds/sound1.wav");
+	bumperFX2 = App->audio->LoadFx("Assets/Sounds/sound2.wav");
+	springFX = App->audio->LoadFx("Assets/Sounds/springFX.wav");
+	flipperFX = App->audio->LoadFx("Assets/Sound/sflipperFX.wav");
+	deathFX = App->audio->LoadFx("Assets/Sounds/deathFX.wav");
+	respawnFX = App->audio->LoadFx("Assets/Sounds/respawnFX.wav");
+	gameOverFX = App->audio->LoadFx("Assets/Sounds/gameOverFX.wav");
+	extraBallFX = App->audio->LoadFx("Assets/Sounds/extraBallFX.wav");
 
 	//rick = LoadTexture("Assets/rick_head.png");
 

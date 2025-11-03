@@ -638,7 +638,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
                 }    
             }
             if (pEntity->type == 5) { //check deathzone
-                
+                App->audio->PlayFx(App->scene_intro->deathFX);
                 App->player->isDead=true;
             }
         }
@@ -671,7 +671,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
                     }
                 }
                 if (pEntity->type == 5) { //check deathzone
-
+                    App->audio->PlayFx(App->scene_intro->deathFX);
                     App->player->isExtraBall = false;
                     App->player->thumb = 0;
                     for (auto& pEntity : App->scene_intro->entities) {
