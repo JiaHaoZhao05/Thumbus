@@ -50,10 +50,18 @@ bool ModuleGame::Start()
 	mblueTex = LoadTexture("Assets/mblue.png");
 	byellowTex = LoadTexture("Assets/byellow.png");
 	bblueTex = LoadTexture("Assets/bblue.png");
+	springTex = LoadTexture("Assets/spring.png");
+
 
 	//load sounds
 	bumperFX = App->audio->LoadFx("Assets/sound.wav");
 	bumperFX2 = App->audio->LoadFx("Assets/sound.wav");
+	springFX = App->audio->LoadFx("Assets/springFX.wav");
+	flipperFX = App->audio->LoadFx("Assets/flipperFX.wav");
+	deathFX = App->audio->LoadFx("Assets/deathFX.wav");
+	respawnFX = App->audio->LoadFx("Assets/respawnFX.wav");
+	gameOverFX = App->audio->LoadFx("Assets/gameOverFX.wav");
+	extraBallFX = App->audio->LoadFx("Assets/extraBallFX.wav");
 
 	//rick = LoadTexture("Assets/rick_head.png");
 
@@ -273,7 +281,7 @@ void ModuleGame::CreateWorld() {
 
 
 	//spring
-	//entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, paddleLeftTex));
+	entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, springTex));
 
 	
 	//entities.emplace_back(deathZone, deathZone->listener);

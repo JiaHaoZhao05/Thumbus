@@ -51,10 +51,17 @@ public:
 	Texture2D mblueTex;
 	Texture2D byellowTex;
 	Texture2D bblueTex;
+	Texture2D springTex;
 
 	//sounds
 	unsigned int bumperFX;
 	int bumperFX2;
+	int springFX;
+	int flipperFX;
+	int deathFX;
+	int respawnFX;
+	int gameOverFX;
+	int extraBallFX;
 
 	//positions
 	Vector2 bumper1Pos = { 150, 300 };
