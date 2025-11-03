@@ -40,7 +40,7 @@ public:
 	Texture2D ballTex;
 	Texture2D xtraballTex;
 	float ballRadius = 12.5f;
-	float friction = 0;
+	float friction = 1.0f;
 	Vector2 startPos = {465,550};
 	Vector2 startPosExtra = { 230,30 };
 };
