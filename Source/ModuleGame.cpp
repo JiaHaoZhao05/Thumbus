@@ -53,9 +53,6 @@ bool ModuleGame::Start()
 	springTex = LoadTexture("Assets/spring.png");
 
 
-	//music
-	
-
 	//load sounds
 	bumperFX = App->audio->LoadFx("Assets/Sounds/bumperFX.wav");
 	bumperFX2 = App->audio->LoadFx("Assets/Sounds/bumperFX2.wav");
@@ -75,7 +72,9 @@ bool ModuleGame::Start()
 
 
 
-	App->audio->PlayFx(pinballTheme-1,1);
+	//music
+	ResetMusic();
+
 	CreateWorld();
 	return ret;
 }
@@ -95,7 +94,9 @@ update_status ModuleGame::Update()
 	{
 		entity->Update();
 	}
-
+	if (musicTimer.ReadSec() > 76) {
+		ResetMusic();
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -149,27 +150,27 @@ static constexpr int outerBackground[92] = {
 };
 
 static constexpr int triangle1[10] = { //bottom right triangle
-	396, 394,
-	409, 395,
+	393, 394,
+	406, 395,
 	435, 465,
-	367, 545,
-	355, 544
+	364, 545,
+	352, 544
 };
 
 static constexpr int triangle2[10] = { //bottom left triangle
 	94, 400,
 	109, 399,
 	148, 544,
-	138, 545,
+	138, 550,
 	54, 468
 };
 
 static constexpr int triangle3[10] = { //top right triangle
 	445, 313,
-	429, 357,
-	420, 355,
-	395, 265,
-	403, 260
+	426, 357,
+	418, 355,
+	391, 265,
+	401, 260
 };
 
 static constexpr int triangle4[10] = { //top left triangle
@@ -318,4 +319,9 @@ void ModuleGame::PlayRandomSound() {
 		App->audio->PlayFx(bumperFX - 1);
 		break;
 	}
+}
+
+void ModuleGame::ResetMusic() {
+	App->audio->PlayFx(pinballTheme - 1, 1);
+	musicTimer = Timer();
 }

@@ -55,6 +55,7 @@ update_status ModulePlayer::Update()
                 }
             }
             App->audio->PlayFx(App->scene_intro->gameOverFX-1);
+            App->scene_intro->ResetMusic();
         }
         if (isExtraBall && balls == 0);
         else RespawnBall();

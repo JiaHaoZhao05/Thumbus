@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 #include "Module.h"
+#include "Timer.h"
 
 #include "p2Point.h"
 
@@ -21,6 +22,7 @@ public:
 
 	void CreateWorld();
 	void PlayRandomSound();
+	void ResetMusic();
 
 	std::vector<PhysicEntity*> entities;
 
@@ -78,5 +80,7 @@ public:
 	Vector2 bumper5Pos = { 150, 150 };
 	Vector2 bumper6Pos = { 250, 200 };
 	Vector2 ballPos = { 463,560 };
+
+	Timer musicTimer;
 	
 };
