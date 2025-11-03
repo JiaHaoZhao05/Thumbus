@@ -68,6 +68,7 @@ public:
 	unsigned int sensorFX3;
 	unsigned int sensorFX4;
 	unsigned int sensorFX5;
+	unsigned int pinballTheme;
 
 	//positions
 	Vector2 bumper1Pos = { 150, 300 };

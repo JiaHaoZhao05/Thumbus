@@ -53,6 +53,9 @@ bool ModuleGame::Start()
 	springTex = LoadTexture("Assets/spring.png");
 
 
+	//music
+	
+
 	//load sounds
 	bumperFX = App->audio->LoadFx("Assets/Sounds/bumperFX.wav");
 	bumperFX2 = App->audio->LoadFx("Assets/Sounds/bumperFX2.wav");
@@ -68,7 +71,11 @@ bool ModuleGame::Start()
 	sensorFX3 = App->audio->LoadFx("Assets/Sounds/sensorFX3.wav");
 	sensorFX4 = App->audio->LoadFx("Assets/Sounds/sensorFX4.wav");
 	sensorFX5 = App->audio->LoadFx("Assets/Sounds/sensorFX5.wav");
+	pinballTheme = App->audio->LoadFx("Assets/Music/pinballTheme.wav");
 
+
+
+	App->audio->PlayFx(pinballTheme-1,1);
 	CreateWorld();
 	return ret;
 }
