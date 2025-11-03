@@ -203,7 +203,7 @@ update_status ModulePhysics::PostUpdate()
             App->physics->world->SetGravity(temp);
         }
         if (App->renderer->selector == 1) { //reduce friction
-            App->player->friction -= 0.5f;
+            App->player->friction -= 0.05f;
             if (App->player->friction < 0) App->player->friction = 0;
             App->player->ModedBallFriction(App->player->friction);
         }
@@ -221,7 +221,7 @@ update_status ModulePhysics::PostUpdate()
             App->physics->world->SetGravity(temp);
         }
         if (App->renderer->selector == 1) { //increase friction
-            App->player->friction += 0.5f;
+            App->player->friction += 0.05f;
             App->player->ModedBallFriction(App->player->friction);
         }
         if (App->renderer->selector == 2) { //increase fps
@@ -620,25 +620,43 @@ void ModulePhysics::BeginContact(b2Contact* contact)
             if (pEntity->type == 1) { //check bumpers
                 App->player->currentScore += 75;
                 pEntity->isSwitched = true;
-                App->audio->PlayFx(App->scene_intro->bumperFX);
+                App->scene_intro->PlayRandomSound();
             }
             if (pEntity->type == 2) { //check triangles
                 App->player->currentScore += 50;
                 pEntity->isSwitched = true;
-                App->audio->PlayFx(App->scene_intro->bumperFX);
+                App->scene_intro->PlayRandomSound();
             }
             if (pEntity->type == 3) { //check background
 
             }
             if (pEntity->type == 4) { //check sensors
                 if (!pEntity->isSwitched) {
-                    App->audio->PlayFx(App->scene_intro->bumperFX);
+                    int thumb = App->player->thumb;
+                    switch (thumb)
+                    {
+                    case 0:
+                        App->audio->PlayFx(App->scene_intro->sensorFX1 - 1);
+                        break;
+                    case 1:
+                        App->audio->PlayFx(App->scene_intro->sensorFX2 - 1);
+                        break;
+                    case 2:
+                        App->audio->PlayFx(App->scene_intro->sensorFX3 - 1);
+                        break;
+                    case 3:
+                        App->audio->PlayFx(App->scene_intro->sensorFX4 - 1);
+                        break;
+                    case 4:
+                        App->audio->PlayFx(App->scene_intro->sensorFX5 - 1);
+                        break;
+                    }
                     App->player->thumb++;
                     pEntity->isSwitched = true;
                 }    
             }
             if (pEntity->type == 5) { //check deathzone
-                App->audio->PlayFx(App->scene_intro->deathFX);
+                App->audio->PlayFx(App->scene_intro->deathFX-1);
                 App->player->isDead=true;
             }
         }
@@ -652,26 +670,44 @@ void ModulePhysics::BeginContact(b2Contact* contact)
                 if (pEntity->type == 1) { //check bumpers
                     App->player->currentScore += 75;
                     pEntity->isSwitched = true;
-                    App->audio->PlayFx(App->scene_intro->bumperFX);
+                    App->scene_intro->PlayRandomSound();
                 }
                 if (pEntity->type == 2) { //check triangles
                     App->player->currentScore += 50;
                     pEntity->isSwitched = true;
-                    App->audio->PlayFx(App->scene_intro->bumperFX);
+                    App->scene_intro->PlayRandomSound();
                 }
                 if (pEntity->type == 3) { //check background
 
                 }
                 if (pEntity->type == 4) { //check sensors
                     if (!pEntity->isSwitched) {
-                        App->audio->PlayFx(App->scene_intro->bumperFX);
+                        int thumb = App->player->thumb;
+                        switch (thumb)
+                        {
+                        case 0:
+                            App->audio->PlayFx(App->scene_intro->sensorFX1 - 1);
+                            break;
+                        case 1:
+                            App->audio->PlayFx(App->scene_intro->sensorFX2 - 1);
+                            break;
+                        case 2:
+                            App->audio->PlayFx(App->scene_intro->sensorFX3 - 1);
+                            break;
+                        case 3:
+                            App->audio->PlayFx(App->scene_intro->sensorFX4 - 1);
+                            break;
+                        case 4:
+                            App->audio->PlayFx(App->scene_intro->sensorFX5 - 1);
+                            break;
+                        }
                         App->player->thumb++;
                         pEntity->isSwitched = true;
                         //if (App->player->thumb == 5)App->player->isExtraBall = true;
                     }
                 }
                 if (pEntity->type == 5) { //check deathzone
-                    App->audio->PlayFx(App->scene_intro->deathFX);
+                    App->audio->PlayFx(App->scene_intro->deathFX-1);
                     App->player->isExtraBall = false;
                     App->player->thumb = 0;
                     for (auto& pEntity : App->scene_intro->entities) {
