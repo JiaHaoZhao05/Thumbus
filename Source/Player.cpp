@@ -20,6 +20,7 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
     ballTex = LoadTexture("Assets/ball.png");
+    xtraballTex = LoadTexture("Assets/xtraball.png");
     ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex, friction);
     currentScore = 0;
 	return true;
@@ -90,7 +91,7 @@ void::ModulePlayer::ModedBallFriction(float friction) {
 void ModulePlayer::ExtraBall() {
     currentScore += 1000;
     App->audio->PlayFx(App->scene_intro->extraBallFX);
-    extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, ballTex, friction);
+    extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, xtraballTex, friction);
     isExtraBall = true;
 }
 

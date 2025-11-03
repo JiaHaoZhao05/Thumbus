@@ -38,6 +38,7 @@ public:
 	PhysicEntity* ball;
 	PhysicEntity* extraBall;
 	Texture2D ballTex;
+	Texture2D xtraballTex;
 	float ballRadius = 12.5f;
 	float friction = 0;
 	Vector2 startPos = {465,550};
