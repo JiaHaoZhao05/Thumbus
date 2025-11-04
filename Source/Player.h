@@ -23,6 +23,7 @@ public:
 	void ModedBallFriction(float friction);
 	void ExtraBall();
 	void ReadInputs();
+	void CheckOutOfBound();
 
 public:
 

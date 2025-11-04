@@ -1,0 +1,11 @@
+// Pivot 0, 0
+int outerBackground - copia[4] = {
+	440, 680,
+	490, 680
+};
+
+// Pivot 0.000000, 0.000000
+float outerBackground - copia[4] = {
+	0.880000f, 0.850000f,
+	0.980000f, 0.850000f
+};

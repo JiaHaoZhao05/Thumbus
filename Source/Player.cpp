@@ -51,6 +51,7 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
+    CheckOutOfBound();
     ReadInputs();
     if (isDead) {
         balls--;
@@ -157,6 +158,15 @@ void ModulePlayer::ReadInputs() {
         App->audio->PlayFx(App->scene_intro->springFX - 1);
     }
     else  spring->state = 0;
+}
+
+void ModulePlayer::CheckOutOfBound() {
+    b2Vec2 pos = ball->physBody->body->GetPosition();
+    if (pos.x > 0.02*450 && pos.x < 0.02*490 &&  pos.y > 0.02*680)  ball->physBody->body->SetTransform({ 0.02f * startPos.x,0.02f * startPos.y }, 0);
+    if (isExtraBall) {
+        pos = extraBall->physBody->body->GetPosition();
+        if(pos.x > 0.02 * 450 && pos.x < 0.02 * 490 && pos.y > 0.02 * 680)  extraBall->physBody->body->SetTransform({ 0.02f * startPos.x,0.02f * startPos.y }, 0);
+    }
 }
 
 void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
