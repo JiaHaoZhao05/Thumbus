@@ -19,19 +19,24 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
-    ballTex = LoadTexture("Assets/ball.png");
-    xtraballTex = LoadTexture("Assets/xtraball.png");
-    ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex, friction);
-    currentScore = 0;
+    //load textures
+    ballTex = LoadTexture("Assets/Player/ball.png");
+    xtraballTex = LoadTexture("Assets/Player/xtraball.png");
+    paddleRightTex = LoadTexture("Assets/Player/ThumbRight.png");
+    paddleLeftTex = LoadTexture("Assets/Player/ThumbLeft.png");
+    springTex = LoadTexture("Assets/Player/spring.png");
 
-    paddleRightTex = LoadTexture("Assets/ThumbRight.png");
-    paddleLeftTex = LoadTexture("Assets/ThumbLeft.png");
-    springTex = LoadTexture("Assets/spring.png");
+    //ball
+    ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex, friction);
+
     //spring
     spring = new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, springTex);
+
     //flippers
     paddleLeft = new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 677, this, paddleLeftTex, 1);
     paddleRight = new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 679, this, paddleRightTex, 2);
+
+    currentScore = 0;
 
 	return true;
 }
@@ -48,15 +53,14 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
-// Update: draw background
 update_status ModulePlayer::Update()
 {
     CheckOutOfBound();
     ReadInputs();
-    if (isDead) {
+    if (isDead) { //ball lost
         balls--;
         isDead = false;
-        if (!isExtraBall && balls <= 0) { //game over
+        if (!isExtraBall && balls <= 0) { //if game over (no balls left) -> start next game
             if (currentScore > highScore) highScore = currentScore;
             previousScore = currentScore;
             currentScore = 0;
@@ -73,13 +77,13 @@ update_status ModulePlayer::Update()
         if (isExtraBall && balls == 0);
         else RespawnBall();
     }
-    if (thumb == 5 && !isExtraBall) {
+    if (thumb == 5 && !isExtraBall) { //extra ball condition
         ExtraBall();
     }
 
     //udpate entites
-    if (isExtraBall) extraBall->Update();
     ball->Update();
+    if (isExtraBall) extraBall->Update();
     paddleLeft->Update();
     paddleRight->Update();
     spring->Update();
@@ -121,15 +125,15 @@ void::ModulePlayer::ModedBallFriction(float friction) {
 }
 
 
-void ModulePlayer::ExtraBall() {
-    currentScore += 1000;
+void ModulePlayer::ExtraBall() { //instance extra ball
+    currentScore += 750;
     App->audio->PlayFx(App->scene_intro->extraBallFX-1);
     extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, xtraballTex, friction);
 
     isExtraBall = true;
 }
 
-void ModulePlayer::ReadInputs() {
+void ModulePlayer::ReadInputs() { //read player inputs
     if (IsKeyDown(KEY_LEFT)) { //left paddle inputs
         paddleLeft->state = 1;
        if (IsKeyPressed(KEY_LEFT)) {
@@ -170,4 +174,5 @@ void ModulePlayer::CheckOutOfBound() {
 }
 
 void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
+
 }

@@ -53,7 +53,6 @@ update_status ModulePhysics::PreUpdate()
 {
     world->Step(1.0f / 60.0f, 6, 2);
 
-    //for (b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
     for (b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
     {
         if (contact->GetFixtureA()->IsSensor() && contact->IsTouching())
@@ -63,7 +62,7 @@ update_status ModulePhysics::PreUpdate()
             PhysBody* physA = (PhysBody*)dataA.pointer;
             PhysBody* physB = (PhysBody*)dataB.pointer;
             if (physA && physB && physA->listener)
-                physA->listener->OnCollision(physA, physB);
+                physA->listener->OnCollision(physA, physB); //call OnCollision method
         }
     }
     return UPDATE_CONTINUE;
@@ -276,8 +275,7 @@ PhysBody* ModulePhysics::CreateBumper(int x, int y, int radius)
     shape.m_radius = PIXEL_TO_METERS(radius);
     b2FixtureDef fixture;
     fixture.shape = &shape;
-    fixture.density = 1.0f;
-    fixture.restitution = 1, 1;
+    fixture.restitution = 1;
 
     b->CreateFixture(&fixture);
 
@@ -478,7 +476,7 @@ PhysBody* ModulePhysics::CreateChainTriangle(int x, int y, const int* points, in
 
     b2FixtureDef fixture;
     fixture.shape = &shape;
-    fixture.restitution = 0.9, 1;
+    fixture.restitution = 0.9;
 
     b->CreateFixture(&fixture);
 
@@ -613,7 +611,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
         physB->listener->OnCollision(physB, physA);
 
 
-    PhysBody* ball = App->player->ball->physBody;
+    PhysBody* ball = App->player->ball->physBody; //check all list of entities for ball
     for (auto& pEntity : App->scene_intro->entities) {
         if (physA == pEntity->physBody && physB == ball) {
             
@@ -663,7 +661,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
     }
 
     if (App->player->isExtraBall == true) {
-        PhysBody* extraBall = App->player->extraBall->physBody;
+        PhysBody* extraBall = App->player->extraBall->physBody; //check all list of entities for extra ball
         for (auto& pEntity : App->scene_intro->entities) {
             if (physA == pEntity->physBody && physB == extraBall) {
 
@@ -703,7 +701,6 @@ void ModulePhysics::BeginContact(b2Contact* contact)
                         }
                         App->player->thumb++;
                         pEntity->isSwitched = true;
-                        //if (App->player->thumb == 5)App->player->isExtraBall = true;
                     }
                 }
                 if (pEntity->type == 5) { //check deathzone

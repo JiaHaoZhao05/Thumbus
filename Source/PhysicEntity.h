@@ -318,7 +318,7 @@ public:
 		}
 		else if (state == 2) {
 
-			float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit()); //Erik you need the difference that was just its current position
+			float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit());
 			float k = 15.0f; // constante elastica del resorte (ajustable)
 			float force = -k * compression; //raylib negative == up
 
@@ -327,7 +327,7 @@ public:
 			// aplicar impulso hacia arriba
 			springBody->body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true); 
 		}
-		else { //si no estas haciendo nada, gravedad mueve el muelle, esto hace que vuelva a su posicion inicial, no lo quites Erik
+		else { //si no estas haciendo nada, gravedad mueve el muelle, esto hace que vuelva a su posicion inicial
 			if (currentTranslation > PIXEL_TO_METERS(0.5f)) {
 				springPrismatic->EnableMotor(true);
 				springPrismatic->SetMotorSpeed(-10.0f);  // negative = move up on screen

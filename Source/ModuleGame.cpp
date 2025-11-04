@@ -25,10 +25,10 @@ bool ModuleGame::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//load textures
-	bumperTex = LoadTexture("Assets/bumper2.png");
-	bumperMiniTex = LoadTexture("Assets/bumperMini2.png");
-	bumperTexAux = LoadTexture("Assets/bumper.png");
-	bumperMiniTexAux = LoadTexture("Assets/bumperMini.png");
+	bumperTex = LoadTexture("Assets/Map/bumper2.png");
+	bumperMiniTex = LoadTexture("Assets/Map/bumperMini2.png");
+	bumperTexAux = LoadTexture("Assets/Map/bumper.png");
+	bumperMiniTexAux = LoadTexture("Assets/Map/bumperMini.png");
 	outerBackgroundTex = LoadTexture("Assets/Map/outerBackground.png");
 	triangle1Tex = LoadTexture("Assets/Map/triangle1.png");
 	triangle2Tex = LoadTexture("Assets/Map/triangle2.png");
@@ -38,18 +38,16 @@ bool ModuleGame::Start()
 	triangle2TexAux = LoadTexture("Assets/Map/triangle22.png");
 	triangle3TexAux = LoadTexture("Assets/Map/triangle32.png");
 	triangle4TexAux = LoadTexture("Assets/Map/triangle42.png");
-	tyellowTex = LoadTexture("Assets/tyellow.png");
-	tblueTex = LoadTexture("Assets/tblue.png");
-	hyellowTex = LoadTexture("Assets/hyellow.png");
-	hblueTex = LoadTexture("Assets/hblue.png");
-	uyellowTex = LoadTexture("Assets/uyellow.png");
-	ublueTex = LoadTexture("Assets/ublue.png");
-	myellowTex = LoadTexture("Assets/myellow.png");
-	mblueTex = LoadTexture("Assets/mblue.png");
-	byellowTex = LoadTexture("Assets/byellow.png");
-	bblueTex = LoadTexture("Assets/bblue.png");
-	
-
+	tyellowTex = LoadTexture("Assets/Map/tyellow.png");
+	tblueTex = LoadTexture("Assets/Map/tblue.png");
+	hyellowTex = LoadTexture("Assets/Map/hyellow.png");
+	hblueTex = LoadTexture("Assets/Map/hblue.png");
+	uyellowTex = LoadTexture("Assets/Map/uyellow.png");
+	ublueTex = LoadTexture("Assets/Map/ublue.png");
+	myellowTex = LoadTexture("Assets/Map/myellow.png");
+	mblueTex = LoadTexture("Assets/Map/mblue.png");
+	byellowTex = LoadTexture("Assets/Map/byellow.png");
+	bblueTex = LoadTexture("Assets/Map/bblue.png");
 
 	//load sounds
 	bumperFX = App->audio->LoadFx("Assets/Sounds/bumperFX.wav");
@@ -69,12 +67,12 @@ bool ModuleGame::Start()
 	sensorFX5 = App->audio->LoadFx("Assets/Sounds/sensorFX5.wav");
 	pinballTheme = App->audio->LoadFx("Assets/Music/pinballTheme.wav");
 
-
-
 	//music
 	ResetMusic();
 
+	//create entities
 	CreateWorld();
+
 	return ret;
 }
 
@@ -99,7 +97,10 @@ update_status ModuleGame::Update()
 	return UPDATE_CONTINUE;
 }
 
-static constexpr int outerBackground[92] = {
+
+//chain coordinates
+
+static constexpr int outerBackground[92] = { //outer box
 	241, 6,
 	165, 17,
 	123, 38,
@@ -180,7 +181,7 @@ static constexpr int triangle4[10] = { //top left triangle
 	101, 197
 };
 
-static constexpr int thumbusRight[28] = {
+static constexpr int thumbusRight[28] = { //right flipper
 	263, 698,
 	260, 688,
 	267, 677,
@@ -197,7 +198,7 @@ static constexpr int thumbusRight[28] = {
 	273, 697
 };
 
-static constexpr int thumbusLeft[28] = {
+static constexpr int thumbusLeft[28] = { //left flipper
 	231, 690,
 	227, 698,
 	217, 697,
@@ -214,7 +215,7 @@ static constexpr int thumbusLeft[28] = {
 	229, 684
 };
 
-static constexpr int t[12] = {
+static constexpr int t[12] = { //t
 	187, 404,
 	230, 440,
 	206, 451,
@@ -223,14 +224,14 @@ static constexpr int t[12] = {
 	178, 426
 };
 
-static constexpr int h[8] = {
+static constexpr int h[8] = { //h
 	39, 345,
 	80, 306,
 	117, 349,
 	77, 387
 };
 
-static constexpr int u[12] = {
+static constexpr int u[12] = { //u
 	219, 254,
 	268, 254,
 	265, 297,
@@ -239,14 +240,14 @@ static constexpr int u[12] = {
 	202, 281
 };
 
-static constexpr int m[8] = {
+static constexpr int m[8] = { //m
 	293, 138,
 	351, 141,
 	358, 209,
 	277, 202
 };
 
-static constexpr int b[8] = {
+static constexpr int b[8] = { //b
 	322, 306,
 	367, 297,
 	385, 361,
@@ -284,10 +285,8 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new DeathZone(App->physics,this));
 
 }
-//Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
-// the flippers move
 
-void ModuleGame::PlayRandomSound() {
+void ModuleGame::PlayRandomSound() { //randomized sounds for collisions with triangles and bumpers
 	int r = rand() % 6;
 
 	switch (r)
