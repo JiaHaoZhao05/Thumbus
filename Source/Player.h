@@ -22,6 +22,7 @@ public:
 	void RespawnBall();
 	void ModedBallFriction(float friction);
 	void ExtraBall();
+	void ReadInputs();
 
 public:
 
@@ -43,4 +44,12 @@ public:
 	float friction = 0.1f;
 	Vector2 startPos = {465,550};
 	Vector2 startPosExtra = { 230,30 };
+
+	PhysicEntity* paddleLeft;
+	PhysicEntity* paddleRight;
+	PhysicEntity* spring;
+	Texture2D paddleLeftTex;
+	Texture2D paddleRightTex;
+	Texture2D springTex;
+	bool wasKeyDown = false;
 };

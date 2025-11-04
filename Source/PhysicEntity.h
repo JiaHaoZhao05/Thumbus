@@ -31,6 +31,7 @@ public:
 	Module* listener;
 	int type;
 	bool isSwitched = false;
+	int state = 0;
 
 };
 
@@ -229,10 +230,10 @@ public:
 
 	void Move() {
 		if (_id == 1) {
-			if (IsKeyDown(KEY_LEFT))
+			if (state > 0)
 			{
 				leftJoint->EnableMotor(false);
-				if (IsKeyPressed(KEY_LEFT))
+				if (state > 1)
 					leftPaddle->ApplyAngularImpulse(-60.0f, true); // flip upward
 			}
 			else
@@ -247,10 +248,10 @@ public:
 		}
 
 		if (_id == 2) {
-			if (IsKeyDown(KEY_RIGHT))
+			if (state > 0)
 			{
 				rightJoint->EnableMotor(false);
-				if (IsKeyPressed(KEY_RIGHT))
+				if (state > 1)
 					rightPaddle->ApplyAngularImpulse(60.0f, true); // flip upward
 
 			}
@@ -302,10 +303,8 @@ public:
 
 	void Move() {
 		float currentTranslation = springPrismatic->GetJointTranslation();
-		static bool wasKeyDown = false;
 
-		if (IsKeyDown(KEY_DOWN)) {
-			wasKeyDown = true;
+		if (state == 1) {
 
 			springPrismatic->EnableMotor(true);
 
@@ -317,8 +316,7 @@ public:
 				springPrismatic->SetMotorSpeed(0.0f);
 			}
 		}
-		else if (wasKeyDown && IsKeyUp(KEY_DOWN)) {
-			wasKeyDown = false;
+		else if (state == 2) {
 
 			float compression = fabs(currentTranslation - springPrismatic->GetLowerLimit()); //Erik you need the difference that was just its current position
 			float k = 15.0f; // constante elastica del resorte (ajustable)

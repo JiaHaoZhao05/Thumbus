@@ -41,8 +41,6 @@ public:
 	Texture2D triangle3TexAux;
 	Texture2D triangle4Tex;
 	Texture2D triangle4TexAux;
-	Texture2D paddleLeftTex;
-	Texture2D paddleRightTex;
 	Texture2D tyellowTex;
 	Texture2D tblueTex;
 	Texture2D hyellowTex;
@@ -53,14 +51,14 @@ public:
 	Texture2D mblueTex;
 	Texture2D byellowTex;
 	Texture2D bblueTex;
-	Texture2D springTex;
 
 	//sounds
 	unsigned int bumperFX;
 	unsigned int bumperFX2;
 	unsigned int bumperFX3;
 	unsigned int springFX;
-	unsigned int flipperFX;
+	unsigned int flipperLFX;
+	unsigned int flipperRFX;
 	unsigned int deathFX;
 	unsigned int respawnFX;
 	unsigned int gameOverFX;
