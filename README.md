@@ -3,6 +3,7 @@
 ## Description
 
 A simple pinball arcade simulator with [Box2D](https://box2d.org/) physics, featuring an eyeball as the ball and thumbs as flappers.
+Inspiration has been taken from "3d pinball Space Cadet".
 
 [Original Repository](https://github.com/JiaHaoZhao05/Thumbus)
 
@@ -27,7 +28,7 @@ A simple pinball arcade simulator with [Box2D](https://box2d.org/) physics, feat
 
 ## Developers
 
-* [LuYing Bao Cheng](https://github.com/Luigi-box) - Artist
+* [LuYing Bao Cheng](https://github.com/Luigi-box) - Artist Programmer
 * [Òscar Jiménez Benítez](https://github.com/OscarJimenez25) - Programmer
 * [Erik Argemí Chinchilla](https://github.com/ErikArgemi) - Programmer
 * [Jia Hao Zhao Deng](https://github.com/JiaHaoZhao05) - Programmer
