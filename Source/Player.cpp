@@ -23,6 +23,16 @@ bool ModulePlayer::Start()
     xtraballTex = LoadTexture("Assets/xtraball.png");
     ball = new Ball(App->physics, startPos.x, startPos.y, this, ballTex, friction);
     currentScore = 0;
+
+    paddleRightTex = LoadTexture("Assets/ThumbRight.png");
+    paddleLeftTex = LoadTexture("Assets/ThumbLeft.png");
+    springTex = LoadTexture("Assets/spring.png");
+    //spring
+    spring = new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, springTex);
+    //flippers
+    paddleLeft = new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 677, this, paddleLeftTex, 1);
+    paddleRight = new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 679, this, paddleRightTex, 2);
+
 	return true;
 }
 
@@ -41,6 +51,7 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
+    ReadInputs();
     if (isDead) {
         balls--;
         isDead = false;
@@ -64,8 +75,14 @@ update_status ModulePlayer::Update()
     if (thumb == 5 && !isExtraBall) {
         ExtraBall();
     }
+
+    //udpate entites
     if (isExtraBall) extraBall->Update();
     ball->Update();
+    paddleLeft->Update();
+    paddleRight->Update();
+    spring->Update();
+
 
 
     return UPDATE_CONTINUE;
@@ -109,6 +126,37 @@ void ModulePlayer::ExtraBall() {
     extraBall = new Ball(App->physics, startPosExtra.x, startPosExtra.y, this, xtraballTex, friction);
 
     isExtraBall = true;
+}
+
+void ModulePlayer::ReadInputs() {
+    if (IsKeyDown(KEY_LEFT)) { //left paddle inputs
+        paddleLeft->state = 1;
+       if (IsKeyPressed(KEY_LEFT)) {
+          paddleLeft->state = 2;
+          App->audio->PlayFx(App->scene_intro->flipperLFX - 1);
+        }
+    }
+    else paddleLeft->state = 0;
+
+    if (IsKeyDown(KEY_RIGHT)) { //right paddle inputs
+        paddleRight->state = 1;
+        if (IsKeyPressed(KEY_RIGHT)) {
+            paddleRight->state = 2;
+            App->audio->PlayFx(App->scene_intro->flipperRFX - 1);
+        }
+    }
+    else paddleRight->state = 0;
+
+    if (IsKeyDown(KEY_DOWN)) { //spring inputs   
+        spring->state = 1;
+        wasKeyDown = true;
+    }
+    else if (wasKeyDown && IsKeyUp(KEY_DOWN)) {
+        wasKeyDown = false;
+        spring->state = 2;
+        App->audio->PlayFx(App->scene_intro->springFX - 1);
+    }
+    else  spring->state = 0;
 }
 
 void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {

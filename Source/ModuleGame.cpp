@@ -25,8 +25,6 @@ bool ModuleGame::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//load textures
-	paddleRightTex = LoadTexture("Assets/ThumbRight.png");
-	paddleLeftTex = LoadTexture("Assets/ThumbLeft.png");
 	bumperTex = LoadTexture("Assets/bumper2.png");
 	bumperMiniTex = LoadTexture("Assets/bumperMini2.png");
 	bumperTexAux = LoadTexture("Assets/bumper.png");
@@ -50,7 +48,7 @@ bool ModuleGame::Start()
 	mblueTex = LoadTexture("Assets/mblue.png");
 	byellowTex = LoadTexture("Assets/byellow.png");
 	bblueTex = LoadTexture("Assets/bblue.png");
-	springTex = LoadTexture("Assets/spring.png");
+	
 
 
 	//load sounds
@@ -58,7 +56,8 @@ bool ModuleGame::Start()
 	bumperFX2 = App->audio->LoadFx("Assets/Sounds/bumperFX2.wav");
 	bumperFX3 = App->audio->LoadFx("Assets/Sounds/bumperFX3.wav");
 	springFX = App->audio->LoadFx("Assets/Sounds/springFX.wav");
-	flipperFX = App->audio->LoadFx("Assets/Sounds/flipperFX.wav");
+	flipperLFX = App->audio->LoadFx("Assets/Sounds/flipperLFX.wav");
+	flipperRFX = App->audio->LoadFx("Assets/Sounds/flipperRFX.wav");
 	deathFX = App->audio->LoadFx("Assets/Sounds/deathFX.wav");
 	respawnFX = App->audio->LoadFx("Assets/Sounds/respawnFX.wav");
 	gameOverFX = App->audio->LoadFx("Assets/Sounds/gameOverFX.wav");
@@ -273,9 +272,6 @@ void ModuleGame::CreateWorld() {
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle3, 10, this, triangle3Tex, triangle3TexAux));
 	entities.emplace_back(new Triangle(App->physics, 0, 0, triangle4, 10, this, triangle4Tex, triangle4TexAux));
 
-	//flippers
-	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 175, 677, this, paddleLeftTex, 1));
-	entities.emplace_back(new Flipper(App->physics, 100, 20, 5.0f, 0.3f, 250, 679, this, paddleRightTex, 2));
 
 	//sensors
 	entities.emplace_back(new Sensor(App->physics, 0, 0, t, 12, this, tblueTex, tyellowTex));
@@ -286,10 +282,6 @@ void ModuleGame::CreateWorld() {
 
 	//deathzone
 	entities.emplace_back(new DeathZone(App->physics,this));
-
-	//spring
-	entities.emplace_back(new Spring(App->physics, 10, 60, 1.0f, 0.2f, 463, 650, this, springTex));
-
 
 }
 //Module game should call activate on the flipper. All input on ModuleGame. We can create a Flipper file where we define the functions that make
