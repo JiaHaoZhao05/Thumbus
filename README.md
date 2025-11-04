@@ -8,10 +8,10 @@ A simple pinball arcade simulator with [Box2D](https://box2d.org/) physics, feat
 
 ## Key Features
 
-* {Feature01}
-* {Feature02}
-* {Feature03}
-* {Feature04}
+* {Flippers}
+* {Spring}
+* {Score and Highscore}
+* {Combo}
 
 ## Controls
 
